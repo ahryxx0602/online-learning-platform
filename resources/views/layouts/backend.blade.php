@@ -19,7 +19,8 @@
 
     <!-- Custom styles for this template-->
     <link href="{{asset('backend/css/sb-admin-2.min.css')}}" rel="stylesheet">
-
+    {{-- ALLOW PAGE TO PUSH EXTRA CSS --}}
+    @stack('styles')
 </head>
 
 <body id="page-top">
@@ -101,7 +102,8 @@
 <!-- Page level custom scripts -->
 <script src="{{asset('backend/js/demo/chart-area-demo.js')}}"></script>
 <script src="{{asset('backend/js/demo/chart-pie-demo.js')}}"></script>
-
+{{-- ALLOW PAGE TO PUSH EXTRA SCRIPTS --}}
+@stack('scripts')
 </body>
 
 </html>
