@@ -3,7 +3,7 @@
     <div>
         <h1 class="h3 mb-0 text-gray-800">{{ $pageTitle }}</h1>
         <ol class="breadcrumb mb-0 mt-2">
-            <li class="breadcrumb-item"><a href="{{ route('admin.users.index') }}"></a></li>
+            <li class="breadcrumb-item"><a href="{{ route('dashboard.index') }}">Dashboard</a></li>
             <li class="breadcrumb-item active" aria-current="page">{{ $pageTitle }}</li>
         </ol>
     </div>
