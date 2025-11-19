@@ -1,31 +1,51 @@
 @extends('layouts.backend')
 @section('content')
     <form action="" method="post">
+        @csrf
         <div class="row">
             <div class="col-6">
                 <div class="mb-3">
                     <label for="">Tên</label>
-                    <input type="text" class="form-control" placeholder="Nhập tên..." value="">
+                    <input
+                        name="name" type="text"
+                        class="form-control @error('name') is-invalid @enderror"
+                        placeholder="Nhập tên..." value="">
+                    @error('name')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
                 </div>
             </div>
             <div class="col-6">
                 <div class="mb-3">
                     <label for="">Email</label>
-                    <input type="text" class="form-control" placeholder="Nhập email..." value="">
+                    <input name="email" type="text"
+                           class="form-control @error('email') is-invalid @enderror"
+                           placeholder="Nhập email..." value="">
+                    @error('email')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
                 </div>
             </div>
             <div class="col-6">
                 <div class="mb-3">
                     <label for="">Chọn nhóm người dùng</label>
-                    <select name="" id="" class="form-control">
+                    <select name="group_id" id="" class="form-control @error('group_id') is-invalid @enderror">
                         <option value="">Chọn nhóm</option>
                     </select>
+                    @error('group_id')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
                 </div>
             </div>
             <div class="col-6">
                 <div class="mb-3">
                     <label for="">Mật khẩu</label>
-                    <input type="password" class="form-control" placeholder="Nhập mật khẩu..." value="">
+                    <input name="password" type="password"
+                           class="form-control @error('password') is-invalid @enderror"
+                           placeholder="Nhập mật khẩu..." value="">
+                    @error('password')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
                 </div>
             </div>
             <div>
@@ -33,7 +53,6 @@
                 <a href="{{route('admin.users.index')}}" class="btn btn-secondary">Hủy</a>
             </div>
         </div>
-
     </form>
 @endsection
 
