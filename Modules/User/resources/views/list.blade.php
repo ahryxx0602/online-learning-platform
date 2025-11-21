@@ -1,6 +1,11 @@
 @extends('layouts.backend')
 @section('content')
     <p><a href="{{route('admin.users.create')}}" class="btn btn-primary">Thêm mới</a></p>
+    @if(session('msg'))
+        <div class="alert alert-success">
+            {{session('msg')}}
+        </div>
+    @endif
     <div class="card shadow mb-4">
             <div class="card-header py-3">
                 <h6 class="m-0 font-weight-bold text-primary">DataTables Example</h6>

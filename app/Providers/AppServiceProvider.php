@@ -19,6 +19,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        // Set locale mặc định là 'vi' để sử dụng translation tiếng Việt
+        app()->setLocale('vi');
+        // Set locale mặc định là 'en' để sử dụng translation tiếng Anh
+        //app()->setLocale('en');
     }
 }

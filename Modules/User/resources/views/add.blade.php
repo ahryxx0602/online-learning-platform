@@ -9,7 +9,7 @@
                     <input
                         name="name" type="text"
                         class="form-control @error('name') is-invalid @enderror"
-                        placeholder="Nhập tên..." value="">
+                        placeholder="Nhập tên..." value="{{old('name')}}">
                     @error('name')
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
@@ -20,7 +20,7 @@
                     <label for="">Email</label>
                     <input name="email" type="text"
                            class="form-control @error('email') is-invalid @enderror"
-                           placeholder="Nhập email..." value="">
+                           placeholder="Nhập email..." value="{{old('email')}}">
                     @error('email')
                     <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
@@ -31,6 +31,7 @@
                     <label for="">Chọn nhóm người dùng</label>
                     <select name="group_id" id="" class="form-control @error('group_id') is-invalid @enderror">
                         <option value="">Chọn nhóm</option>
+                        <option value="1">Administrator</option>
                     </select>
                     @error('group_id')
                     <div class="invalid-feedback">{{ $message }}</div>
