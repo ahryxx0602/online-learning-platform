@@ -64,7 +64,7 @@
                     {
                         data: "created_at",
                         render: function (data) {
-                            let d = new Date(data);
+                            let d = new Date(data.replace(' ', 'T'));
                             return d.toLocaleDateString('vi-VN') + ' ' + d.toLocaleTimeString('vi-VN');
                         }
                     },
