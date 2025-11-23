@@ -70,29 +70,9 @@
                     },
 
                     // Nút sửa
-                    {
-                        data: "id",
-                        orderable: false,
-                        searchable: false,
-                        render: function(id){
-                            return `<a href="/admin/users/${id}/edit" class="btn btn-warning btn-sm">
-                                    <i class="fa fa-edit"></i> Sửa
-                                </a>`;
-                        }
-                    },
-
+                    { data: "edit", orderable: false, searchable: false },
                     // Nút xoá
-                    {
-                        data: "id",
-                        orderable: false,
-                        searchable: false,
-                        render: function(id){
-                            return `<a href="/admin/users/${id}/delete" class="btn btn-danger btn-sm"
-                                    onclick="return confirm('Bạn có chắc muốn xóa?')">
-                                    <i class="fa fa-trash"></i> Xóa
-                                </a>`;
-                        }
-                    },
+                    { data: "delete", orderable: false, searchable: false },
                 ]
             });
         });

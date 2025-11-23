@@ -21,6 +21,8 @@ Route::group(['namespace' => 'Modules\User\Http\Controllers', 'middleware' => 'w
             Route::get("/data", "UserController@data")->name("admin.users.data");
             Route:: get("/create", "UserController@create")->name("admin.users.create");
             Route:: post("/create", "UserController@store")->name("admin.users.store");
+            Route::get("edit/{user}", "UserController@edit")->name("admin.users.edit");
+            Route::post("edit/{user}", "UserController@update")->name("admin.users.update");
         });
     });
 });

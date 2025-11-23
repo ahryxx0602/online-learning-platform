@@ -36,7 +36,9 @@ class UserController extends Controller
         $users = $this->userRepository->getAllUsers();
          return DataTables::of($users)
              ->addColumn('edit', function ($user) {
-                 return '<a href="#" class="btn btn-warning"><i class="fa fa-edit"></i> Sủa</a>';
+                 return '<a href="'.route("admin.users.edit", $user->id).'" class="btn btn-warning">
+                <i class="fa fa-edit"></i> Sửa
+            </a>';
              })
              ->addColumn('delete', function ($user) {
                  return '<a href="#" class="btn btn-danger"><i class="fa fa-trash"></i> Xóa</a>';
@@ -85,7 +87,9 @@ class UserController extends Controller
      */
     public function edit($id)
     {
-        return view('dashboard::edit');
+        dd(route('admin.users.edit', 1));
+        // return view('users::edit');
+        return "Thanhf";
     }
 
     /**
@@ -93,7 +97,7 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+
     }
 
     /**
