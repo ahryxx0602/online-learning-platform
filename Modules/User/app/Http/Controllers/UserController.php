@@ -71,7 +71,7 @@ class UserController extends Controller
             'group_id' => $request->group_id,
             'password' => bcrypt($request->password),
         ]);
-        return redirect()->route('admin.users.index')->with('msg', __('user::message.create_success'));
+        return back()->with('msg', __('user::message.create.success'));
     }
 
     /**
@@ -87,16 +87,28 @@ class UserController extends Controller
      */
     public function edit($id)
     {
-        dd(route('admin.users.edit', 1));
-        // return view('users::edit');
-        return "Thanhf";
+        $user = $this->userRepository->find($id);
+        if(!$user){
+            abort(404);
+        }
+
+        $pageTitle = "Cập nhật người dùng";
+        return view('user::edit', compact('pageTitle', 'user'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, $id)
+    public function update(UserRequest $request, $id)
     {
+        $data = $request->except('_token', 'password');
+        if($request->password){
+            $data['password'] = bcrypt($request->password);
+        }
+        $status = $this->userRepository->update($id, $data);
+        if($status){
+            return redirect()->route('admin.users.index')->with('msg', __('user::message.update.success'));
+        }
 
     }
 

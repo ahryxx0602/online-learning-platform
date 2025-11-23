@@ -21,7 +21,9 @@ class UserRequest extends FormRequest
 
     public function rules()
     {
-        return [
+        $id = $this->route()->user;
+
+        $rules = [
             'name' => 'required|max:255',
             'email' => 'required|email|max:255|unique:users,email',
             'password' => 'required|min:6',
@@ -31,6 +33,16 @@ class UserRequest extends FormRequest
                 }
             }],
         ];
+        // Nếu có $id thì validate lại mật khẩu và email (UPDATE)
+        if($id){
+            $rules['email'] = 'required|email|max:255|unique:users,email,'.$id;
+            if($this->password){
+                $rules['password'] = 'min:6';
+            }else {
+                unset($rules['password']);
+            }
+        }
+        return $rules;
     }
     public function messages(){
         return [
