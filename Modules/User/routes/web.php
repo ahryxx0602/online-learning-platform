@@ -15,14 +15,16 @@ use Modules\User\Http\Controllers\UserController;
 */
 
 Route::group(['namespace' => 'Modules\User\Http\Controllers', 'middleware' => 'web'] , function () {
-    Route::prefix('admin')->group(function () {
-        Route::prefix('users')->group(function () {
-            Route::get("/", "UserController@index")->name("admin.users.index");
-            Route::get("/data", "UserController@data")->name("admin.users.data");
-            Route:: get("/create", "UserController@create")->name("admin.users.create");
-            Route:: post("/create", "UserController@store")->name("admin.users.store");
-            Route::get("edit/{user}", "UserController@edit")->name("admin.users.edit");
-            Route::post("edit/{user}", "UserController@update")->name("admin.users.update");
+    Route::prefix('admin')->name('admin.')->group(function () {
+        Route::prefix('users')->name('users.')->group(function () {
+            Route::get("/", "UserController@index")->name('index');
+            Route::get("/data", "UserController@data")->name('data');
+            Route::get("/create", "UserController@create")->name('create');
+            Route::post("/create", "UserController@store")->name('store');
+            Route::get("edit/{user}", "UserController@edit")->name('edit');
+            Route::put("edit/{user}", "UserController@update")->name('update');
+            Route::delete("delete/{user}", "UserController@delete")->name('delete');
+            Route::delete("delete-multiple", "UserController@deleteMultiple")->name('deleteMultiple');
         });
     });
 });

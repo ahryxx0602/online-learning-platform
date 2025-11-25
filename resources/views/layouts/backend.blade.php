@@ -6,6 +6,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="description" content="">
     <meta name="author" content="">
 
@@ -103,7 +104,8 @@
 <script src="{{asset('backend/js/demo/chart-area-demo.js')}}"></script>
 <script src="{{asset('backend/js/demo/chart-pie-demo.js')}}"></script>
 {{-- ALLOW PAGE TO PUSH EXTRA SCRIPTS --}}
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="{{ asset('backend/js/scripts.js') }}"></script>
 @stack('scripts')
 </body>
-
 </html>

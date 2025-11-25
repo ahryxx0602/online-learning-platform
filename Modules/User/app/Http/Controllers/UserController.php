@@ -35,19 +35,24 @@ class UserController extends Controller
     {
         $users = $this->userRepository->getAllUsers();
          return DataTables::of($users)
+             ->addColumn('select', function ($user) {
+                 return '<input type="checkbox" class="row-check" value="'.$user->id.'">';
+             })
              ->addColumn('edit', function ($user) {
                  return '<a href="'.route("admin.users.edit", $user->id).'" class="btn btn-warning">
                 <i class="fa fa-edit"></i> Sửa
             </a>';
              })
-             ->addColumn('delete', function ($user) {
-                 return '<a href="#" class="btn btn-danger"><i class="fa fa-trash"></i> Xóa</a>';
-             })
+            ->addColumn('delete', function ($user) {
+                $deleteUrl = route("admin.users.delete", $user->id);
+                return '<button type="button" class="btn btn-danger delete-action" data-url="'.$deleteUrl.'">
+                    <i class="fa fa-trash"></i> Xóa</button>';
+            })
              // Edit Column created_at
              ->editColumn('created_at', function ($user) {
                  return $user->created_at?->format('Y-m-d H:i:s');
              })
-             ->rawColumns(['edit', 'delete'])
+             ->rawColumns(['select', 'edit', 'delete'])
              ->toJson();
     }
 
@@ -115,8 +120,27 @@ class UserController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy($id)
+    public function delete($id)
     {
-        //
+        $this->userRepository->delete($id);
+        return back()->with('msg', __('user::message.delete.success'));
+    }
+
+    public function deleteMultiple(Request $request)
+    {
+        $ids = $request->input('ids', []);
+
+        if (!is_array($ids) || empty($ids)) {
+            return response()->json([
+                'message' => 'Vui lòng chọn ít nhất 1 người dùng',
+            ], 422);
+        }
+
+        $deleted = $this->userRepository->deleteMultiple($ids);
+
+        return response()->json([
+            'message' => __('user::message.delete.success'),
+            'deleted' => $deleted,
+        ]);
     }
 }

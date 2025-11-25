@@ -35,4 +35,9 @@ class UserRepository extends BaseRepository implements UserRepositoryInterface
         }
         return false;
     }
+
+    public function deleteMultiple(array $ids): int
+    {
+        return $this->model->whereIn('id', $ids)->delete();
+    }
 }

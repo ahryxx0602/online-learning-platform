@@ -1,6 +1,18 @@
 @extends('layouts.backend')
 @section('content')
-    <p><a href="{{route('admin.users.create')}}" class="btn btn-primary">Thêm mới</a></p>
+<div class="d-flex mb-3">
+    <a href="{{route('admin.users.create')}}" class="btn btn-primary mr-2">Thêm mới</a>
+
+    <button
+        type="button"
+        class="btn btn-danger"
+        id="bulk-delete-btn"
+        data-url="{{ route('admin.users.deleteMultiple') }}"
+        disabled
+    >
+        Xóa đã chọn
+    </button>
+</div>
 
     @if(session('msg'))
         <div class="alert alert-success">
@@ -18,6 +30,9 @@
                 <table class="table table-bordered" id="dataTable" width="100%">
                     <thead>
                     <tr>
+                        <th width="30">
+                            <input type="checkbox" id="check-all">
+                        </th>
                         <th>Tên</th>
                         <th>Email</th>
                         <th>Nhóm</th>
@@ -30,6 +45,7 @@
             </div>
         </div>
     </div>
+    @include('parts.backend.delete-action')
 @endsection
 
 @push('styles')
@@ -42,15 +58,14 @@
 
     <script>
         $(document).ready(function () {
-            $('#dataTable').DataTable({
+            const table = $('#dataTable').DataTable({
                 processing: true,
                 serverSide: true,
                 ajax: "{{ route('admin.users.data') }}",
                 columns: [
+                    { data: "select", orderable: false, searchable: false },
                     { data: "name" },
                     { data: "email" },
-
-                    // Hiển thị Group theo tên (1 = Admin, 2 = User, ...)
                     {
                         data: "group_id",
                         render: function (data) {
@@ -59,8 +74,6 @@
                                 : '<span class="badge badge-secondary">User</span>';
                         }
                     },
-
-                    // Format ngày đẹp hơn
                     {
                         data: "created_at",
                         render: function (data) {
@@ -68,12 +81,21 @@
                             return d.toLocaleDateString('vi-VN') + ' ' + d.toLocaleTimeString('vi-VN');
                         }
                     },
-
-                    // Nút sửa
                     { data: "edit", orderable: false, searchable: false },
-                    // Nút xoá
                     { data: "delete", orderable: false, searchable: false },
                 ]
+            });
+
+            window.userDataTable = table;
+
+            table.on('draw', function () {
+                const masterCheckbox = document.getElementById('check-all');
+                if (masterCheckbox) {
+                    masterCheckbox.checked = false;
+                }
+                if (window.updateBulkDeleteState) {
+                    window.updateBulkDeleteState();
+                }
             });
         });
     </script>
