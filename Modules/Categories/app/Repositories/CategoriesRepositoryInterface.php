@@ -4,11 +4,10 @@ namespace Modules\Categories\Repositories;
 
 interface CategoriesRepositoryInterface
 {
-    public function getCategories($limit);
 
-    public function getAllForDataTable();
+    public function getCategories();
 
-    public function getParentOptions($excludeId = null);
+    public function getAllCategories();
 
     public function deleteMultiple(array $ids);
 }

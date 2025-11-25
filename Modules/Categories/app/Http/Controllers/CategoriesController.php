@@ -23,47 +23,48 @@ class CategoriesController extends Controller
         return view('categories::list', compact('pageTitle'));
     }
 
-    public function data()
-    {
-        $categories = $this->categoriesRepository->getAllForDataTable();
+    public function data() {
+        $categories = $this->categoriesRepository->getCategories();
+        $categories = DataTables::of($categories)
+//            ->addColumn('select', function ($category) { return '<input type="checkbox" class="row-check" value="'.$category->id.'">'; })
+//            ->addColumn('link', function ($category) { $url = url('/category/' . $category->slug); return '<a href="'.$url.'" target="_blank" class="badge badge-info" style="cursor:pointer;"> '.e($category->slug).' </a>'; })
+//            ->addColumn('edit', function ($category) { return '<a href="'.route('admin.categories.edit', $category->id).'" class="btn btn-warning btn-sm"> <i class="fa fa-edit"></i> Sửa </a>'; })
+//            ->addColumn('delete', function ($category) { return '<a href="'.route('admin.categories.delete', $category['id']).'" class="btn btn-danger btn-sm delete-action"> <i class="fa fa-trash"></i> Sửa </a>'; })
+//            ->editColumn('created_at', function ($category) { return $category->created_at?->format('Y-m-d H:i:s'); })
+//            ->rawColumns(['select', 'link', 'edit', 'delete'])
+            ->toArray();
+            $categories['data'] = $this->getCategoriesTable($categories['data']);
+            return $categories;
+    }
 
-        return DataTables::of($categories)
-            ->addColumn('select', function ($category) {
-                return '<input type="checkbox" class="row-check" value="'.$category->id.'">';
-            })
-            ->addColumn('link', function ($category) {
-                $url = url('/category/' . $category->slug);
-                return '<a href="'.$url.'" target="_blank" class="badge badge-info" style="cursor:pointer;">
-                            '.e($category->slug).'
-                        </a>';
-            })
-            ->addColumn('edit', function ($category) {
-                return '<a href="'.route('admin.categories.edit', $category->id).'" 
-                            class="btn btn-warning btn-sm">
-                            <i class="fa fa-edit"></i> Sửa
-                        </a>';
-            })
-            ->addColumn('delete', function ($category) {
-                $deleteUrl = route('admin.categories.delete', $category->id);
-                return '<button type="button" 
-                            class="btn btn-danger btn-sm delete-action" 
-                            data-url="'.$deleteUrl.'">
-                            <i class="fa fa-trash"></i> Xóa
-                        </button>';
-            })
-            ->editColumn('created_at', function ($category) {
-                return $category->created_at?->format('Y-m-d H:i:s');
-            })
-            ->rawColumns(['select', 'link', 'edit', 'delete'])
-            ->toJson();
+
+    public function getCategoriesTable($categories, $char='',&$result = []) {
+        if(!empty($categories)){
+            foreach ($categories as $key => $category) {
+                $row = $category;
+                $row['select'] = '<input type="checkbox" class="row-check" value="'.$category['id'].'">';
+                $row['name'] = $char.$row['name'];
+                $row['edit'] = '<a href="'.route('admin.categories.edit', $category['id']).'" class="btn btn-warning btn-sm"> <i class="fa fa-edit"></i> Sửa </a>';
+                $row['delete'] = '<a href="'.route('admin.categories.delete', $category['id']).'" class="btn btn-danger btn-sm delete-action"> <i class="fa fa-trash"></i> Sửa </a>';
+                $url = url('/category/' . $category['slug']); $row['link'] = '<a target="_blank" href="'.$url.'" target="_blank" class="badge badge-info" style="cursor:pointer;"> '.e($category['slug']).' </a>';
+                $row['created_at'] = $category['created_at']
+                    ? date('Y-m-d H:i:s', strtotime($category['created_at']))
+                    : null;
+                unset($row['sub_categories']);
+                unset($row['updated_at']);
+                $result[] = $row;
+                if(!empty($category['sub_categories'])){
+                    $this->getCategoriesTable($category['sub_categories'],
+                    $char."|--", $result); } } }
+        return $result;
     }
 
     public function create()
     {
         $pageTitle = 'Thêm danh mục';
-        $parents = $this->categoriesRepository->getParentOptions();
+        $categories = $this->categoriesRepository->getAllCategories();
 
-        return view('categories::add', compact('pageTitle', 'parents'));
+        return view('categories::add', compact('pageTitle', 'categories'));
     }
 
     public function store(CategoriesRequest $request)
@@ -83,9 +84,9 @@ class CategoriesController extends Controller
     {
         $category = $this->categoriesRepository->find($id);
         $pageTitle = 'Cập nhật danh mục';
-        $parents = $this->categoriesRepository->getParentOptions($id);
+        $categories = $this->categoriesRepository->getAllCategories();
 
-        return view('categories::edit', compact('pageTitle', 'category', 'parents'));
+        return view('categories::edit', compact('pageTitle', 'category', 'categories'));
     }
 
     public function update(CategoriesRequest $request, $id)

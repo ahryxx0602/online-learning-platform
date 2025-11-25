@@ -12,23 +12,17 @@ class CategoriesRepository extends BaseRepository implements CategoriesRepositor
         return Category::class;
     }
 
-    public function getCategories($limit)
+
+    public function getCategories()
     {
-        return $this->model->latest()->paginate($limit);
+        return $this->model->with(['subCategories'])
+            ->where('parent_id', 0)
+            ->select(['id','name','slug','parent_id','created_at'])->latest()->get();;
     }
 
-    public function getAllForDataTable()
+    public function getAllCategories()
     {
-        return $this->model->select(['id','name','slug','parent_id','created_at'])->get();
-    }
-
-    public function getParentOptions($excludeId = null)
-    {
-        $query = $this->model->select(['id', 'name'])->orderBy('name');
-        if ($excludeId) {
-            $query->where('id', '<>', $excludeId);
-        }
-        return $query->get();
+        return $this->getAll();
     }
 
     public function deleteMultiple(array $ids): int

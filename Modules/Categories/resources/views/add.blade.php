@@ -51,14 +51,8 @@
                         name="parent_id"
                         class="form-control @error('parent_id') is-invalid @enderror"
                     >
-                        <option value="0" {{ old('parent_id', 0) == 0 ? 'selected' : '' }}>Không</option>
-                        @isset($parents)
-                            @foreach($parents as $parent)
-                                <option value="{{ $parent->id }}" {{ old('parent_id') == $parent->id ? 'selected' : '' }}>
-                                    {{ $parent->name }}
-                                </option>
-                            @endforeach
-                        @endisset
+                        <option value="0">Không</option>
+                        {{getCategories($categories, old('parent_id') )}}
                     </select>
                     @error('parent_id')
                         <div class="invalid-feedback">{{ $message }}</div>

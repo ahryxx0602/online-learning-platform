@@ -60,6 +60,7 @@
             const table = $('#dataTable').DataTable({
             processing: true,
             serverSide: true,
+                pageLength: 2,
             deferRender: true,
             searching: false,
             ordering: false,

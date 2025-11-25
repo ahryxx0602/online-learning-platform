@@ -29,6 +29,10 @@ class Category extends Model
         return $this->hasMany(self::class, 'parent_id');
     }
 
+    public function subCategories()
+    {
+        return $this->children()->with('subCategories');
+    }
     // protected static function newFactory(): CategoryFactory
     // {
     //     // return CategoryFactory::new();
