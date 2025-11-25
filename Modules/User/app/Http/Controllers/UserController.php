@@ -39,13 +39,13 @@ class UserController extends Controller
                  return '<input type="checkbox" class="row-check" value="'.$user->id.'">';
              })
              ->addColumn('edit', function ($user) {
-                 return '<a href="'.route("admin.users.edit", $user->id).'" class="btn btn-warning">
+                 return '<a href="'.route("admin.users.edit", $user->id).'" class="btn btn-warning btn-sm">
                 <i class="fa fa-edit"></i> Sửa
             </a>';
              })
             ->addColumn('delete', function ($user) {
                 $deleteUrl = route("admin.users.delete", $user->id);
-                return '<button type="button" class="btn btn-danger delete-action" data-url="'.$deleteUrl.'">
+                return '<button type="button" class="btn btn-danger delete-action btn-sm" data-url="'.$deleteUrl.'">
                     <i class="fa fa-trash"></i> Xóa</button>';
             })
              // Edit Column created_at

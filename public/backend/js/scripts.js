@@ -150,3 +150,18 @@ if (bulkDeleteBtn) {
         });
     });
 }
+function convertToSlug(text) {
+    return text
+        .toLowerCase()
+        .normalize("NFD") // tách dấu
+        .replace(/[\u0300-\u036f]/g, "") // xóa dấu
+        .replace(/[^a-z0-9\s-]/g, "") // xóa ký tự đặc biệt
+        .trim()
+        .replace(/\s+/g, "-") // thay khoảng trắng bằng -
+        .replace(/-+/g, "-"); // gộp dấu - liên tiếp
+}
+
+// Auto generate slug when typing name
+document.getElementById("name").addEventListener("keyup", function () {
+    document.getElementById("slug").value = convertToSlug(this.value);
+});

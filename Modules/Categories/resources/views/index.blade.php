@@ -1,7 +1,7 @@
-@extends('categories::layouts.master')
+@extends('user::layouts.master')
 
 @section('content')
     <h1>Hello World</h1>
 
-    <p>Module: {!! config('categories.name') !!}</p>
+    <p>Module: {!! config('user.name') !!}</p>
 @endsection

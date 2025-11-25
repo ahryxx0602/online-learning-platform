@@ -1,13 +1,13 @@
 @extends('layouts.backend')
 @section('content')
 <div class="d-flex mb-3">
-    <a href="{{route('admin.users.create')}}" class="btn btn-primary mr-2">Thêm mới</a>
+    <a href="{{route('admin.categories.create')}}" class="btn btn-primary mr-2">Thêm mới</a>
 
     <button
         type="button"
         class="btn btn-danger"
         id="bulk-delete-btn"
-        data-url="{{ route('admin.users.deleteMultiple') }}"
+        data-url="{{ route('admin.categories.deleteMultiple') }}"
         disabled
     >
         Xóa đã chọn
@@ -22,7 +22,7 @@
 
     <div class="card shadow mb-4">
         <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-primary">Danh sách người dùng</h6>
+            <h6 class="m-0 font-weight-bold text-primary">Danh sách danh mục</h6>
         </div>
 
         <div class="card-body">
@@ -34,8 +34,7 @@
                             <input type="checkbox" id="check-all">
                         </th>
                         <th>Tên</th>
-                        <th>Email</th>
-                        <th>Nhóm</th>
+                        <th>Link</th>
                         <th>Ngày tạo</th>
                         <th>Sửa</th>
                         <th>Xóa</th>
@@ -59,33 +58,21 @@
     <script>
         $(document).ready(function () {
             const table = $('#dataTable').DataTable({
-                processing: true,
-                serverSide: true,
-                ajax: "{{ route('admin.users.data') }}",
-                columns: [
-                    { data: "select", orderable: false, searchable: false },
-                    { data: "name" },
-                    { data: "email" },
-                    {
-                        data: "group_id",
-                        render: function (data) {
-                            return data == 1
-                                ? '<span class="badge badge-primary">Admin</span>'
-                                : '<span class="badge badge-secondary">User</span>';
-                        }
-                    },
-                    {
-                        data: "created_at",
-                        render: function (data) {
-                            let d = new Date(data.replace(' ', 'T'));
-                            return d.toLocaleDateString('vi-VN') + ' ' + d.toLocaleTimeString('vi-VN');
-                        }
-                    },
-                    { data: "edit", orderable: false, searchable: false },
-                    { data: "delete", orderable: false, searchable: false },
-                ]
-            });
-
+            processing: true,
+            serverSide: true,
+            deferRender: true,
+            searching: false,
+            ordering: false,
+            ajax: "{{ route('admin.categories.data') }}",
+            columns: [
+                { data: "select", orderable: false, searchable: false, width: "40px" },
+                { data: "name" },
+                { data: "link" },
+                { data: "created_at" },
+                { data: "edit", orderable: false, searchable: false, width: "80px" },
+                { data: "delete", orderable: false, searchable: false, width: "80px" },
+            ]
+        });
             window.userDataTable = table;
 
             table.on('draw', function () {
