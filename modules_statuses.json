@@ -1,5 +1,6 @@
 {
     "Dashboard": true,
     "User": true,
-    "Categories": true
+    "Categories": true,
+    "Courses": true
 }
