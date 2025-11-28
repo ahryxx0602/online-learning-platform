@@ -3,13 +3,13 @@
 namespace Modules\Courses\Repositories;
 
 use App\Repositories\BaseRepository;
-use Modules\Courses\Models\Courses;
+use Modules\Courses\Models\Course;
 
 class CoursesRepository extends BaseRepository implements CoursesRepositoryInterface
 {
     public function getModel()
     {
-        return Courses::class;
+        return Course::class;
     }
     /**
      * Lấy danh sách khóa học có phân trang

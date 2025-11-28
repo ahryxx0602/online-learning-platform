@@ -4,7 +4,7 @@ namespace Modules\Courses\Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
-use Modules\Courses\Models\Courses;
+use Modules\Courses\Models\Course;
 
 class CoursesSeeder extends Seeder
 {
@@ -38,7 +38,7 @@ class CoursesSeeder extends Seeder
 
         foreach ($coursesNames as $index => $name) {
 
-            Courses::create([
+            Course::create([
                 'name' => $name,
                 'slug' => Str::slug($name) . '-' . ($index + 1),
                 'detail' => 'Khóa học: ' . $name . ' — được thiết kế dành cho cả người mới bắt đầu và đã có kinh nghiệm.',

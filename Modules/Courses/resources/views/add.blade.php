@@ -1,7 +1,7 @@
 @extends('layouts.backend')
 
 @section('content')
-    <form action="" method="post">
+    <form action="{{ route('admin.courses.store') }}" method="post">
         @csrf
         <div class="row">
 
@@ -50,6 +50,7 @@
                         class="form-control @error('teacher_id') is-invalid @enderror"
                     >
                         <option value="0">-- Chọn giảng viên --</option>
+                        <option value="1">Phan Văn Thành</option>
                         @foreach($teachers ?? [] as $teacher)
                             <option value="{{ $teacher->id }}"
                                 {{ old('teacher_id') == $teacher->id ? 'selected' : '' }}>
@@ -115,22 +116,6 @@
                 </div>
             </div>
 
-            {{-- Thời lượng --}}
-            <div class="col-6">
-                <div class="mb-3">
-                    <label for="">Thời lượng (giờ)</label>
-                    <input
-                        name="durations"
-                        type="number"
-                        class="form-control @error('durations') is-invalid @enderror"
-                        placeholder="VD: 30 giờ"
-                        value="{{ old('durations') }}"
-                    >
-                    @error('durations')
-                    <div class="invalid-feedback">{{ $message }}</div>
-                    @enderror
-                </div>
-            </div>
 
             {{-- Tài liệu --}}
             <div class="col-6">
@@ -157,8 +142,8 @@
                         name="status"
                         class="form-control @error('status') is-invalid @enderror"
                     >
-                        <option value="1" {{ old('status') == 1 ? 'selected' : '' }}>Hiển thị</option>
-                        <option value="0" {{ old('status') == 0 ? 'selected' : '' }}>Ẩn</option>
+                        <option value="1" {{ old('status') == 1 ? 'selected' : '' }}>Đã ra mắt</option>
+                        <option value="0" {{ old('status') == 0 ? 'selected' : '' }}>Chưa ra mắt</option>
                     </select>
                     @error('status')
                     <div class="invalid-feedback">{{ $message }}</div>
@@ -196,7 +181,6 @@
                                 class="form-control @error('thumbnail') is-invalid @enderror"
                                 placeholder="Link ảnh..."
                                 value="{{ old('thumbnail') }}"
-                                oninput="previewImage()"
                             >
                             @error('thumbnail')
                             <div class="invalid-feedback">{{ $message }}</div>
@@ -210,7 +194,11 @@
                         </div>
 
                         <div class="col-3 mt-2">
-                            <div id="holder"></div>
+                            <div id="holder">
+                                @if(old('thumbnail'))
+                                    <img style="height: 5rem;" src="{{ old('thumbnail') }}"/>
+                                @endif
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -240,14 +228,6 @@
             </div>
         </div>
     </form>
-    <!-- Modal xem ảnh -->
-    <div class="modal fade" id="previewModal" tabindex="-1">
-        <div class="modal-dialog modal-md modal-dialog-centered">
-            <div class="modal-content p-3">
-                <img id="modalImage" src="" style="width: 100%; border-radius: 6px;">
-            </div>
-        </div>
-    </div>
 @endsection
 
 {{-- JS Preview --}}
@@ -293,10 +273,5 @@
         tester.onerror = () => img.src = "https://via.placeholder.com/200x150?text=Invalid+URL";
         tester.src = url;
     }
-    document.getElementById('preview').addEventListener('click', function () {
-        let src = this.src;
-        document.getElementById('modalImage').src = src;
-        $('#previewModal').modal('show');
-    });
 </script>
 @endpush

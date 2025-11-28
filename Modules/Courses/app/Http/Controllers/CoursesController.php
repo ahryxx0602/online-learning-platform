@@ -4,6 +4,7 @@ namespace Modules\Courses\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Modules\Courses\App\Http\Requests\CoursesRequest;
 use Modules\Courses\Repositories\CoursesRepository;
 use Yajra\DataTables\Facades\DataTables;
 
@@ -14,6 +15,7 @@ class CoursesController extends Controller
     public function __construct(CoursesRepository $coursesRepository)
     {
         $this->coursesRepository = $coursesRepository;
+//        $this->teachersRepository = $teachersRepository;
     }
     /**
      * Display a listing of the resource.
@@ -38,8 +40,10 @@ class CoursesController extends Controller
             })
             ->addColumn('delete', function ($course) {
                 $deleteUrl = route("admin.courses.delete", $course->id);
-                return '<button type="button" class="btn btn-danger delete-action btn-sm" data-url="'.$deleteUrl.'">
-                    <i class="fa fa-trash"></i> Xóa</button>';
+                return
+                    '<button type="button" class="btn btn-danger delete-action btn-sm" data-url="'.$deleteUrl.'">
+                        <i class="fa fa-trash"></i> Xóa
+                    </button>';
             })
             // Edit Column created_at
             ->editColumn('created_at', function ($course) {
@@ -62,23 +66,17 @@ class CoursesController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(CoursesRequest $request)
     {
-        $this->coursesRepository->create([
-            'name' => $request->name,
-            'slug' => $request->slug,
-            'detail' => $request->detail,
-            'teacher_id' => $request->teacher_id,
-            'thumbnail' => $request->thumbnail,
-            'price' => $request->price,
-            'sale_price' => $request->sale_price,
-            'code' => $request->code,
-            'durations' => $request->durations,
-            'is_document' => $request->is_document,
-            'supports' => $request->supports,
-            'status' => $request->status,
-        ]);
-        return back()->with('msg', __('courses::message.create.success'));
+        $course = $request->except('_token');
+        if(!$course['sale_price']){
+            $course['sale_price'] = 0;
+        }
+        if(!$course['price']){
+            $course['price'] = 0;
+        }
+        $this->coursesRepository->create($course);
+        return redirect()->route('admin.courses.index')->with('msg', __('courses::message.create.success'));
     }
 
     /**
@@ -98,14 +96,19 @@ class CoursesController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, $id)
+    public function update(CoursesRequest $request, $id)
     {
         $data = $request->except('_token');
-
+        if(!$data['sale_price']){
+            $data['sale_price'] = 0;
+        }
+        if(!$data['price']){
+            $data['price'] = 0;
+        }
         $updated = $this->coursesRepository->update($id, $data);
 
         if ($updated) {
-            return redirect()->route('admin.courses.index')
+            return back()
                 ->with('msg', __('courses::message.update.success'));
         }
     }

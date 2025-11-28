@@ -45,8 +45,10 @@ class UserController extends Controller
              })
             ->addColumn('delete', function ($user) {
                 $deleteUrl = route("admin.users.delete", $user->id);
-                return '<button type="button" class="btn btn-danger delete-action btn-sm" data-url="'.$deleteUrl.'">
-                    <i class="fa fa-trash"></i> Xóa</button>';
+                return
+                    '<button type="button" class="btn btn-danger delete-action btn-sm" data-url="'.$deleteUrl.'">
+                        <i class="fa fa-trash"></i> Xóa
+                    </button>';
             })
              // Edit Column created_at
              ->editColumn('created_at', function ($user) {

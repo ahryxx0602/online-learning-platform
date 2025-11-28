@@ -3,7 +3,6 @@
 @section('content')
     <div class="d-flex mb-3">
         <a href="{{ route('admin.courses.create') }}" class="btn btn-primary mr-2">Thêm mới</a>
-
         <button
             type="button"
             class="btn btn-danger"
@@ -28,7 +27,7 @@
 
         <div class="card-body">
             <div class="table-responsive">
-                <table class="table table-bordered table-sm" id="coursesTable" width="100%">
+                <table class="table table-bordered table-sm" id="dataTable" width="100%">
                     <thead>
                     <tr>
                         <th width="30">
@@ -63,7 +62,7 @@
     <script>
         $(document).ready(function () {
 
-            const table = $('#coursesTable').DataTable({
+            const table = $('#dataTable').DataTable({
                 processing: true,
                 serverSide: true,
                 ajax: "{{ route('admin.courses.data') }}",
@@ -74,12 +73,19 @@
                     {
                         data: "teacher_id",
                         render: function (data, type, row) {
-                            return row.teacher?.name ?? '—';
+                            return row.teacher && row.teacher.name ? row.teacher.name : '—';
                         }
                     },
                     {
                         data: "price",
                         render: function (data, type, row) {
+
+                            // Nếu không có giá hoặc giá = 0
+                            if (!data || data == 0) {
+                                return '<span class="badge badge-success">Miễn phí</span>';
+                            }
+
+                            // Ngược lại: hiển thị format tiền
                             return new Intl.NumberFormat('vi-VN').format(data) + 'đ';
                         }
                     },
@@ -87,8 +93,8 @@
                         data: "status",
                         render: function (data) {
                             return data == 1
-                                ? '<span class="badge badge-success">Hiển thị</span>'
-                                : '<span class="badge badge-secondary">Ẩn</span>';
+                                ? '<span class="badge badge-success">Đã ra mắt</span>'
+                                : '<span class="badge badge-secondary">Chưa ra mắt</span>';
                         }
                     },
                     {

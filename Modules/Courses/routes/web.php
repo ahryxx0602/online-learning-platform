@@ -21,9 +21,9 @@ Route::group(['namespace' => 'Modules\Courses\Http\Controllers', 'middleware' =>
             Route::get("/data", "CoursesController@data")->name('data');
             Route::get("/create", "CoursesController@create")->name('create');
             Route::post("/create", "CoursesController@store")->name('store');
-            Route::get("edit/{courses}", "CoursesController@edit")->name('edit');
-            Route::put("edit/{courses}", "CoursesController@update")->name('update');
-            Route::delete("delete/{courses}", "CoursesController@delete")->name('delete');
+            Route::get("edit/{course}", "CoursesController@edit")->name('edit');
+            Route::put("edit/{course}", "CoursesController@update")->name('update');
+            Route::delete("delete/{course}", "CoursesController@delete")->name('delete');
             Route::delete("delete-multiple", "CoursesController@deleteMultiple")->name('deleteMultiple');
         });
     });

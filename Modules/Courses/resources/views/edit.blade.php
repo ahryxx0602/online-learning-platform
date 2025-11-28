@@ -8,7 +8,7 @@
         </div>
     @endif
 
-    <form action="" method="post">
+    <form action="{{ route('admin.courses.update', $course->id) }}" method="post">
         @csrf
         @method('PUT')
 
@@ -20,11 +20,10 @@
                     <label for="">Tên khóa học</label>
                     <input
                         name="name"
-                        id="name"
                         type="text"
                         class="form-control @error('name') is-invalid @enderror"
-                        placeholder="Nhập tên khóa học..."
                         value="{{ old('name', $course->name) }}"
+                        placeholder="Nhập tên khóa học..."
                     >
                     @error('name')
                     <div class="invalid-feedback">{{ $message }}</div>
@@ -38,11 +37,10 @@
                     <label for="">Slug</label>
                     <input
                         name="slug"
-                        id="slug"
                         type="text"
                         class="form-control @error('slug') is-invalid @enderror"
-                        placeholder="Nhập slug..."
                         value="{{ old('slug', $course->slug) }}"
+                        placeholder="Nhập slug..."
                     >
                     @error('slug')
                     <div class="invalid-feedback">{{ $message }}</div>
@@ -59,12 +57,16 @@
                         class="form-control @error('teacher_id') is-invalid @enderror"
                     >
                         <option value="0">-- Chọn giảng viên --</option>
-                        @foreach($teachers ?? [] as $teacher)
-                            <option value="{{ $teacher->id }}"
-                                {{ (old('teacher_id', $course->teacher_id)) == $teacher->id ? 'selected' : '' }}>
-                                {{ $teacher->name }}
-                            </option>
-                        @endforeach
+                        <option value="1">Phan Văn Thành</option>
+{{--                        @foreach($teachers as $teacher)--}}
+{{--                            <option value="{{ $teacher->id }}"--}}
+{{--                                {{ old('teacher_id', $course->teacher_id) == $teacher->id ? 'selected' : '' }}>--}}
+{{--                                {{ $teacher->name }}--}}
+{{--                            </option>--}}
+{{--                        @endforeach--}}
+                        <select name="teacher_id" class="form-control">
+                            <option value="0">-- Chưa có giảng viên --</option>
+                        </select>
                     </select>
                     @error('teacher_id')
                     <div class="invalid-feedback">{{ $message }}</div>
@@ -80,8 +82,8 @@
                         name="price"
                         type="number"
                         class="form-control @error('price') is-invalid @enderror"
-                        placeholder="Giá..."
                         value="{{ old('price', $course->price) }}"
+                        placeholder="Nhập giá..."
                     >
                     @error('price')
                     <div class="invalid-feedback">{{ $message }}</div>
@@ -97,8 +99,8 @@
                         name="sale_price"
                         type="number"
                         class="form-control @error('sale_price') is-invalid @enderror"
-                        placeholder="Giá khuyến mãi..."
                         value="{{ old('sale_price', $course->sale_price) }}"
+                        placeholder="Nhập giá khuyến mãi..."
                     >
                     @error('sale_price')
                     <div class="invalid-feedback">{{ $message }}</div>
@@ -106,7 +108,7 @@
                 </div>
             </div>
 
-            {{-- Mã --}}
+            {{-- Mã khóa học --}}
             <div class="col-6">
                 <div class="mb-3">
                     <label for="">Mã khóa học</label>
@@ -114,8 +116,8 @@
                         name="code"
                         type="text"
                         class="form-control @error('code') is-invalid @enderror"
-                        placeholder="Mã..."
                         value="{{ old('code', $course->code) }}"
+                        placeholder="Nhập mã..."
                     >
                     @error('code')
                     <div class="invalid-feedback">{{ $message }}</div>
@@ -123,24 +125,7 @@
                 </div>
             </div>
 
-            {{-- Thời lượng --}}
-            <div class="col-6">
-                <div class="mb-3">
-                    <label for="">Thời lượng (giờ)</label>
-                    <input
-                        name="durations"
-                        type="number"
-                        class="form-control @error('durations') is-invalid @enderror"
-                        placeholder="VD: 20 giờ"
-                        value="{{ old('durations', $course->durations) }}"
-                    >
-                    @error('durations')
-                    <div class="invalid-feedback">{{ $message }}</div>
-                    @enderror
-                </div>
-            </div>
-
-            {{-- Có tài liệu --}}
+            {{-- Tài liệu --}}
             <div class="col-6">
                 <div class="mb-3">
                     <label for="">Có tài liệu?</label>
@@ -165,8 +150,8 @@
                         name="status"
                         class="form-control @error('status') is-invalid @enderror"
                     >
-                        <option value="1" {{ old('status', $course->status) == 1 ? 'selected' : '' }}>Hiển thị</option>
-                        <option value="0" {{ old('status', $course->status) == 0 ? 'selected' : '' }}>Ẩn</option>
+                        <option value="1" {{ old('status', $course->status) == 1 ? 'selected' : '' }}>Đã ra mắt</option>
+                        <option value="0" {{ old('status', $course->status) == 0 ? 'selected' : '' }}>Chưa ra mắt</option>
                     </select>
                     @error('status')
                     <div class="invalid-feedback">{{ $message }}</div>
@@ -182,6 +167,7 @@
                         name="supports"
                         class="form-control @error('supports') is-invalid @enderror"
                         rows="3"
+                        placeholder="Nhập hỗ trợ..."
                     >{{ old('supports', $course->supports) }}</textarea>
                     @error('supports')
                     <div class="invalid-feedback">{{ $message }}</div>
@@ -189,7 +175,7 @@
                 </div>
             </div>
 
-            {{-- Thumbnail (giống ADD) --}}
+            {{-- Thumbnail --}}
             <div class="col-12">
                 <div class="mb-3">
                     <div class="row align-items-end">
@@ -200,8 +186,8 @@
                                 id="thumbnail"
                                 type="text"
                                 class="form-control @error('thumbnail') is-invalid @enderror"
-                                placeholder="Link ảnh..."
                                 value="{{ old('thumbnail', $course->thumbnail) }}"
+                                placeholder="Link ảnh..."
                                 oninput="previewImage()"
                             >
                             @error('thumbnail')
@@ -210,15 +196,17 @@
                         </div>
 
                         <div class="col-2">
-                            <button type="button" class="btn btn-primary">
+                            <button id="lfm" data-input="thumbnail" data-preview="holder" type="button" class="btn btn-primary">
                                 <i class="fas fa-image"></i> Chọn ảnh
                             </button>
                         </div>
 
                         <div class="col-3 mt-2">
-                            <img id="preview"
-                                 src="{{ $course->thumbnail ?? 'https://via.placeholder.com/200x150?text=Preview' }}"
-                                 class="img-thumbnail">
+                            <div id="holder">
+                                @if(old('thumbnail', $course->thumbnail))
+                                    <img style="height: 5rem;" src="{{ old('thumbnail', $course->thumbnail) }}">
+                                @endif
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -230,7 +218,8 @@
                     <label for="">Chi tiết khóa học</label>
                     <textarea
                         name="detail"
-                        class="form-control @error('detail') is-invalid @enderror"
+                        id="detail"
+                        class="form-control ckeditor @error('detail') is-invalid @enderror"
                         rows="4"
                     >{{ old('detail', $course->detail) }}</textarea>
                     @error('detail')
@@ -248,59 +237,4 @@
         </div>
     </form>
 
-    {{-- Modal xem ảnh --}}
-    <div class="modal fade" id="previewModal" tabindex="-1">
-        <div class="modal-dialog modal-md modal-dialog-centered">
-            <div class="modal-content p-3">
-                <img id="modalImage" src="" style="width: 100%; border-radius: 6px;">
-            </div>
-        </div>
-    </div>
-
 @endsection
-
-
-{{-- Style giống add --}}
-@section('stylesheet')
-    <style>
-        #preview {
-            max-height: 150px;
-            width: auto;
-            object-fit: contain;
-            border-radius: 4px;
-            border: 1px solid #dcdcdc;
-            background: #f1f1f1;
-            padding: 2px;
-            cursor: pointer;
-        }
-        #preview:hover {
-            transform: scale(1.03);
-            box-shadow: 0 0 8px rgba(0,0,0,0.15);
-        }
-    </style>
-@endsection
-
-@push('scripts')
-    <script>
-        function previewImage() {
-            let url = document.getElementById('thumbnail').value.trim();
-            let img = document.getElementById('preview');
-
-            if (url === "") {
-                img.src = "https://via.placeholder.com/200x150?text=Preview";
-                return;
-            }
-
-            let tester = new Image();
-            tester.onload = () => img.src = url;
-            tester.onerror = () => img.src = "https://via.placeholder.com/200x150?text=Invalid+URL";
-            tester.src = url;
-        }
-
-        document.getElementById('preview').addEventListener('click', function () {
-            let src = this.src;
-            document.getElementById('modalImage').src = src;
-            $('#previewModal').modal('show');
-        });
-    </script>
-@endpush
