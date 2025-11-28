@@ -204,15 +204,13 @@
                         </div>
 
                         <div class="col-2">
-                            <button type="button" class="btn btn-primary">
+                            <button id="lfm" data-input="thumbnail" data-preview="holder" type="button" class="btn btn-primary">
                                 <i class="fas fa-image"></i> Chọn ảnh
                             </button>
                         </div>
 
                         <div class="col-3 mt-2">
-                            <img id="preview"
-                                 src="https://fastly.picsum.photos/id/237/200/300.jpg?hmac=TmmQSbShHz9CdQm0NkEjx1Dyh_Y984R9LpNrpvH2D_U"
-                                 class="img-thumbnail">
+                            <div id="holder"></div>
                         </div>
                     </div>
                 </div>
@@ -224,10 +222,11 @@
                     <label for="">Chi tiết khóa học</label>
                     <textarea
                         name="detail"
-                        class="form-control @error('detail') is-invalid @enderror"
+                        id="detail"
+                        class="form-control ckeditor @error('detail') is-invalid @enderror"
                         placeholder="Nhập mô tả chi tiết..."
                         rows="4"
-                    >{{ old('detail') }}</textarea>
+                    >{{ old('detail', $course->detail ?? '') }}</textarea>
                     @error('detail')
                     <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
@@ -254,28 +253,26 @@
 {{-- JS Preview --}}
 @section('stylesheet')
     <style>
-        /* Style cho preview */
-        #preview {
-            max-height: 150px;         /* GIỚI HẠN CHIỀU CAO NHỎ */
-            width: auto;              /* ĐỂ ẢNH TỰ GIỮ TỈ LỆ */
-            object-fit: contain;      /* KHÔNG BAO GIỜ CROP */
-            border-radius: 4px;
+        /* Khung holder hiển thị ảnh sau khi chọn */
+        #holder {
+            width: 120px;
+            height: 90px;
             border: 1px solid #dcdcdc;
-            background: #f1f1f1;
-            padding: 2px;
+            background: #fafafa;
+            border-radius: 6px;
+            padding: 4px;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: 0.2s;
         }
-
-
-        #preview:hover {
+        /* Hover đẹp */
+        #holder:hover {
+            box-shadow: 0 0 10px rgba(0,0,0,0.15);
             transform: scale(1.03);
-            box-shadow: 0 0 8px rgba(0,0,0,0.15);
         }
-
-        img{
-            max-width: 100%;
-            height: auto;
-        }
-
     </style>
 @endsection
 @push('scripts')

@@ -28,3 +28,5 @@ Route::group(['namespace' => 'Modules\Categories\Http\Controllers', 'middleware'
         });
     });
 });
+
+
