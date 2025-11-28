@@ -9,6 +9,7 @@ return [
     'integer' => ':attribute phải là số',
     'numeric' => ':attribute phải là số hợp lệ',
     'select' => ':attribute bắt buộc phải chọn',
+    'array' => ':attribute là ',
 
     'attributes' => [
         'name' => 'Tên khóa học',
@@ -21,5 +22,6 @@ return [
         'is_document' => 'Tài liệu kèm theo',
         'supports' => 'Hỗ trợ',
         'status' => 'Trạng thái',
+        'categories' => 'Danh mục'
     ],
 ];

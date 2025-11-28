@@ -11,15 +11,6 @@ class CoursesRepository extends BaseRepository implements CoursesRepositoryInter
     {
         return Course::class;
     }
-    /**
-     * Lấy danh sách khóa học có phân trang
-     */
-    public function getCourse($limit)
-    {
-        return $this->model
-            ->with(['teacher'])
-            ->paginate($limit);
-    }
 
     /**
      * Lấy toàn bộ khóa học (dùng cho DataTables)
@@ -39,6 +30,23 @@ class CoursesRepository extends BaseRepository implements CoursesRepositoryInter
             ])
             ->latest()
             ->get();
+    }
+
+
+    public function createCourseCategories($course, $data = [])
+    {
+        return $course->categories()->attach($data);
+    }
+
+    public function updateCourseCategories($course, $data = [])
+    {
+        return $course->categories()->sync($data);
+    }
+
+    public function getRelatedCategories($course)
+    {
+        $categories = $course->categories()->allRelatedIds()->toArray();
+        return $categories;
     }
 
     /**

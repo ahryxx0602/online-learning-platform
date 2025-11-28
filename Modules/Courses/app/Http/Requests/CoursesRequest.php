@@ -21,27 +21,29 @@ class CoursesRequest extends FormRequest
 
     public function rules()
     {
-        $id = $this->route('courses'); // ĐÚNG
+        $id = $this->route()->course;
 
         $rules = [
             'name'        => 'required|max:255',
             'slug'        => 'required|max:255|unique:courses,slug',
             'detail'      => 'required',
-            'teacher_id'  => ['required','integer', function ($attribute, $value, $fail) {
+            'teacher_id'  => ['required', 'integer', function ($attribute, $value, $fail) {
                 if ($value == 0) {
                     $fail(__('courses::validation.select'));
                 }
             }],
             'thumbnail'   => 'required|max:255',
-            'code'        => 'required|max:50',
+            'code'        => 'required|max:50|unique:courses,code',
             'is_document' => 'required|integer',
             'supports'    => 'required|max:500',
             'status'      => 'required|integer',
             'sale_price'  => 'nullable|numeric',
+            'categories'   => 'required|array',
         ];
 
         if ($id) {
             $rules['slug'] = 'required|max:255|unique:courses,slug,' . $id;
+            $rules['code'] = 'required|max:50|unique:courses,code,' . $id;
         }
 
         return $rules;
@@ -61,6 +63,12 @@ class CoursesRequest extends FormRequest
             'is_document.integer'  => __('courses::validation.integer'),
             'status.required'      => __('courses::validation.required'),
             'status.integer'       => __('courses::validation.integer'),
+            'categories.required'   => __('courses::validation.required'),
+            'categories.array'      => __('courses::validation.array'),
+            'code.required'        => __('courses::validation.required'),
+            'code.unique'          => __('courses::validation.unique'),
+            'supports.required'    => __('courses::validation.required'),
+            'thumbnail.required'   => __('courses::validation.required'),
         ];
     }
     public function attributes()
@@ -76,6 +84,7 @@ class CoursesRequest extends FormRequest
             'is_document' => __('courses::validation.attributes.is_document'),
             'supports'    => __('courses::validation.attributes.supports'),
             'status'      => __('courses::validation.attributes.status'),
+            'categories' => __('courses::validation.attributes.categories'),
         ];
     }
 }

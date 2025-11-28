@@ -4,6 +4,7 @@ namespace Modules\Courses\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Modules\Categories\Models\Category;
 // use Modules\Courses\Database\Factories\CoursesFactory;
 
 class Course extends Model
@@ -36,8 +37,13 @@ class Course extends Model
         return $this->belongsTo(\Modules\User\Models\User::class, 'teacher_id', 'id');
     }
 
-    // protected static function newFactory(): CoursesFactory
-    // {
-    //     // return CoursesFactory::new();
-    // }
+    public function categories()
+    {
+        return $this->belongsToMany(
+            Category::class,
+            'categories_courses',
+            'courses_id',      // tên khoá ngoại ĐANG CÓ trong bảng pivot
+            'category_id'
+        );
+    }
 }

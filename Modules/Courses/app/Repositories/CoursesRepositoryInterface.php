@@ -6,7 +6,9 @@ interface CoursesRepositoryInterface
 {
     public function getAllCourses();
 
-    public function getCourse($limit);
+
 
     public function deleteMultiple(array $ids);
+
+    public function createCourseCategories($course, $data=[]);
 }

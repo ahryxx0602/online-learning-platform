@@ -3,7 +3,9 @@
 namespace Modules\Courses\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Modules\Categories\Repositories\CategoriesRepository;
 use Modules\Courses\App\Http\Requests\CoursesRequest;
 use Modules\Courses\Repositories\CoursesRepository;
 use Yajra\DataTables\Facades\DataTables;
@@ -11,11 +13,13 @@ use Yajra\DataTables\Facades\DataTables;
 class CoursesController extends Controller
 {
     protected $coursesRepository;
+    protected $categoriesRepository;
 
-    public function __construct(CoursesRepository $coursesRepository)
+    public function __construct(CoursesRepository $coursesRepository, CategoriesRepository $categoriesRepository)
     {
         $this->coursesRepository = $coursesRepository;
-//        $this->teachersRepository = $teachersRepository;
+        $this->categoriesRepository = $categoriesRepository;
+        //        $this->teachersRepository = $teachersRepository;
     }
     /**
      * Display a listing of the resource.
@@ -31,17 +35,17 @@ class CoursesController extends Controller
         $courses = $this->coursesRepository->getAllCourses();
         return DataTables::of($courses)
             ->addColumn('select', function ($course) {
-                return '<input type="checkbox" class="row-check" value="'.$course->id.'">';
+                return '<input type="checkbox" class="row-check" value="' . $course->id . '">';
             })
             ->addColumn('edit', function ($course) {
-                return '<a href="'.route("admin.courses.edit", $course->id).'" class="btn btn-warning btn-sm">
+                return '<a href="' . route("admin.courses.edit", $course->id) . '" class="btn btn-warning btn-sm">
                 <i class="fa fa-edit"></i> Sửa
             </a>';
             })
             ->addColumn('delete', function ($course) {
                 $deleteUrl = route("admin.courses.delete", $course->id);
                 return
-                    '<button type="button" class="btn btn-danger delete-action btn-sm" data-url="'.$deleteUrl.'">
+                    '<button type="button" class="btn btn-danger delete-action btn-sm" data-url="' . $deleteUrl . '">
                         <i class="fa fa-trash"></i> Xóa
                     </button>';
             })
@@ -60,7 +64,8 @@ class CoursesController extends Controller
     public function create()
     {
         $pageTitle = 'Thêm khóa học';
-        return view('courses::add', compact('pageTitle'));
+        $categories = $this->categoriesRepository->getAllCategories();
+        return view('courses::add', compact('pageTitle', 'categories'));
     }
 
     /**
@@ -68,14 +73,16 @@ class CoursesController extends Controller
      */
     public function store(CoursesRequest $request)
     {
-        $course = $request->except('_token');
-        if(!$course['sale_price']){
-            $course['sale_price'] = 0;
+        $data  = $request->except('_token');
+        if (!$data['sale_price']) {
+            $data['sale_price'] = 0;
         }
-        if(!$course['price']){
-            $course['price'] = 0;
+        if (!$data['price']) {
+            $data['price'] = 0;
         }
-        $this->coursesRepository->create($course);
+        $course = $this->coursesRepository->create($data);
+        $categories = $this->getCategories($course);
+        $this->coursesRepository->createCourseCategories($course, $categories);
         return redirect()->route('admin.courses.index')->with('msg', __('courses::message.create.success'));
     }
 
@@ -85,12 +92,15 @@ class CoursesController extends Controller
     public function edit($id)
     {
         $course = $this->coursesRepository->find($id);
-        if(!$course){
+
+        $categoryIds = $this->coursesRepository->getRelatedCategories($course);
+
+        if (!$course) {
             abort(404);
         }
-
+        $categories = $this->categoriesRepository->getAllCategories();
         $pageTitle = "Cập nhật Khóa học";
-        return view('courses::edit', compact('pageTitle', 'course'));
+        return view('courses::edit', compact('pageTitle', 'course', 'categories', 'categoryIds'));
     }
 
     /**
@@ -99,14 +109,16 @@ class CoursesController extends Controller
     public function update(CoursesRequest $request, $id)
     {
         $data = $request->except('_token');
-        if(!$data['sale_price']){
+        if (!$data['sale_price']) {
             $data['sale_price'] = 0;
         }
-        if(!$data['price']){
+        if (!$data['price']) {
             $data['price'] = 0;
         }
         $updated = $this->coursesRepository->update($id, $data);
-
+        $categories = $this->getCategories($data);
+        $course = $this->coursesRepository->find($id);
+        $this->coursesRepository->updateCourseCategories($course, $categories);
         if ($updated) {
             return back()
                 ->with('msg', __('courses::message.update.success'));
@@ -141,5 +153,17 @@ class CoursesController extends Controller
             'message' => __('courses::message.delete.success'),
             'deleted' => $deleted,
         ]);
+    }
+    public function getCategories($data)
+    {
+        $categories = [];
+        foreach ($data['categories'] as $category) {
+            $categories[$category] =
+                [
+                    'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
+                    'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
+                ];
+        }
+        return $categories;
     }
 }

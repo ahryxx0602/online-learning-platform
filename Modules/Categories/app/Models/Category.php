@@ -4,6 +4,7 @@ namespace Modules\Categories\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Modules\Courses\Models\Course;
 // use Modules\Categories\Database\Factories\CategoryFactory;
 
 class Category extends Model
@@ -33,8 +34,14 @@ class Category extends Model
     {
         return $this->children()->with('subCategories');
     }
-    // protected static function newFactory(): CategoryFactory
-    // {
-    //     // return CategoryFactory::new();
-    // }
+
+    public function courses()
+    {
+        return $this->belongsToMany(
+            Course::class,
+            'categories_courses',
+            'category_id',
+            'courses_id'
+        );
+    }
 }
