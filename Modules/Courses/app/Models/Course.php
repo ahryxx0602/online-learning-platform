@@ -28,7 +28,7 @@ class Courses extends Model
         'durations',
         'is_document',
         'supports',
-    'status',
+        'status',
     ];
 
     public function teacher()
