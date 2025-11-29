@@ -2,5 +2,7 @@
     "Dashboard": true,
     "User": true,
     "Categories": true,
-    "Courses": true
+    "Courses": true,
+    "Teacher": true,
+    "Teachers": true
 }

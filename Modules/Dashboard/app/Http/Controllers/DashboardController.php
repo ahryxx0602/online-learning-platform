@@ -4,6 +4,10 @@ namespace Modules\Dashboard\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Modules\Categories\Models\Category;
+use Modules\Courses\Models\Course;
+use Modules\Teachers\Models\Teacher;
+use Modules\User\Models\User;
 
 class DashboardController extends Controller
 {
@@ -12,8 +16,19 @@ class DashboardController extends Controller
      */
     public function index()
     {
+        $totalUsers = User::count();
+        $totalCategories = Category::count();
+        $totalCourses = Course::count();
+        $totalTeachers = Teacher::count();
+
         $pageTitle = 'Dashboard';
-        return view('dashboard::dashboard', compact('pageTitle'));
+        return view('dashboard::dashboard', compact(
+            'pageTitle',
+            'totalUsers',
+            'totalCategories',
+            'totalCourses',
+            'totalTeachers'
+        ));
     }
 
     /**

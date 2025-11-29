@@ -48,8 +48,8 @@
     </li>
 
     <!-- Teachers -->
-    <li class="nav-item">
-        <a class="nav-link" href="#">
+    <li class="nav-item {{ request()->routeIs('admin.teachers.*') ? 'active' : '' }}">
+        <a class="nav-link" href="{{ route('admin.teachers.index') }}">
             <i class="fas fa-chalkboard-teacher"></i>
             <span>Giảng viên</span>
         </a>
