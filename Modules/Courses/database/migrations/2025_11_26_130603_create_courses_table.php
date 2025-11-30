@@ -18,7 +18,7 @@ return new class extends Migration
             $table->text('detail')->nullable();
 
             // Quan trọng – Cho phép null
-            $table->unsignedBigInteger('teacher_id')->nullable();
+            $table->unsignedInteger('teacher_id')->nullable();
 
             $table->string('thumbnail')->nullable();
 

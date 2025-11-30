@@ -43,13 +43,18 @@
                     <label for="">Giảng viên</label>
                     <select name="teacher_id" class="form-control @error('teacher_id') is-invalid @enderror">
                         <option value="0">-- Chọn giảng viên --</option>
-                        <option value="1">Phan Văn Thành</option>
-                        {{--                        @foreach ($teachers as $teacher) --}}
-                        {{--                            <option value="{{ $teacher->id }}" --}}
-                        {{--                                {{ old('teacher_id', $course->teacher_id) == $teacher->id ? 'selected' : '' }}> --}}
-                        {{--                                {{ $teacher->name }} --}}
-                        {{--                            </option> --}}
-                        {{--                        @endforeach --}}
+                        @forelse(($teachers ?? []) as $teacher)
+                            @if($teacher)
+                                <option
+                                    value="{{ $teacher->id }}"
+                                    {{ (string) old('teacher_id', $course->teacher_id) === (string) $teacher->id ? 'selected' : '' }}
+                                >
+                                    {{ $teacher->name }}
+                                </option>
+                            @endif
+                        @empty
+                            {{-- Không có giảng viên nào --}}
+                        @endforelse
                         <select name="teacher_id" class="form-control">
                             <option value="0">-- Chưa có giảng viên --</option>
                         </select>

@@ -36,12 +36,13 @@
                     <label for="">Giảng viên</label>
                     <select name="teacher_id" class="form-control @error('teacher_id') is-invalid @enderror">
                         <option value="0">-- Chọn giảng viên --</option>
-                        <option value="1">Phan Văn Thành</option>
-                        @foreach ($teachers ?? [] as $teacher)
-                            <option value="{{ $teacher->id }}" {{ old('teacher_id') == $teacher->id ? 'selected' : '' }}>
-                                {{ $teacher->name }}
-                            </option>
-                        @endforeach
+                        @if($teachers)
+                            @foreach ($teachers ?? [] as $teacher)
+                                <option value="{{ $teacher->id }}" {{ old('teacher_id') == $teacher->id ? 'selected' : '' }}>
+                                    {{ $teacher->name }}
+                                </option>
+                            @endforeach
+                        @endif
                     </select>
                     @error('teacher_id')
                         <div class="invalid-feedback">{{ $message }}</div>

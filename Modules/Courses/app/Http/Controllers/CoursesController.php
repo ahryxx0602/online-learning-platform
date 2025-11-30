@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Modules\Categories\Repositories\CategoriesRepository;
 use Modules\Courses\App\Http\Requests\CoursesRequest;
 use Modules\Courses\Repositories\CoursesRepository;
+use Modules\Teachers\Repositories\TeachersRepository;
 use Yajra\DataTables\Facades\DataTables;
 
 class CoursesController extends Controller
@@ -15,11 +16,13 @@ class CoursesController extends Controller
     protected $coursesRepository;
     protected $categoriesRepository;
 
-    public function __construct(CoursesRepository $coursesRepository, CategoriesRepository $categoriesRepository)
+    protected $teachersRepository;
+
+    public function __construct(CoursesRepository $coursesRepository, CategoriesRepository $categoriesRepository, TeachersRepository $teachersRepository)
     {
         $this->coursesRepository = $coursesRepository;
         $this->categoriesRepository = $categoriesRepository;
-        //        $this->teachersRepository = $teachersRepository;
+        $this->teachersRepository = $teachersRepository;
     }
     /**
      * Display a listing of the resource.
@@ -65,7 +68,8 @@ class CoursesController extends Controller
     {
         $pageTitle = 'Thêm khóa học';
         $categories = $this->categoriesRepository->getAllCategories();
-        return view('courses::add', compact('pageTitle', 'categories'));
+        $teachers = $this->teachersRepository->getAllTeachers();
+        return view('courses::add', compact('pageTitle', 'categories', 'teachers'));
     }
 
     /**
@@ -94,13 +98,14 @@ class CoursesController extends Controller
         $course = $this->coursesRepository->find($id);
 
         $categoryIds = $this->coursesRepository->getRelatedCategories($course);
+        $teachers = $this->teachersRepository->getAllTeachers();
 
         if (!$course) {
             abort(404);
         }
         $categories = $this->categoriesRepository->getAllCategories();
         $pageTitle = "Cập nhật Khóa học";
-        return view('courses::edit', compact('pageTitle', 'course', 'categories', 'categoryIds'));
+        return view('courses::edit', compact('pageTitle', 'course', 'categories', 'categoryIds', 'teachers'));
     }
 
     /**
