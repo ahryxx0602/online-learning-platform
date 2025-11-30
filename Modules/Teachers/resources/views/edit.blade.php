@@ -96,7 +96,7 @@
                     <textarea
                         name="description"
                         rows="4"
-                        class="form-control @error('description') is-invalid @enderror"
+                        class="form-control ckeditor @error('description') is-invalid @enderror"
                     >{{ old('description') ?? $teacher->description }}</textarea>
                     @error('description') <div class="invalid-feedback">{{ $message }}</div> @enderror
                 </div>

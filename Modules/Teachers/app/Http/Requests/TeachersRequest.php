@@ -25,9 +25,9 @@ class TeachersRequest extends FormRequest
         $rules = [
             'name'        => 'required|max:100',
             'slug'        => 'required|max:100|unique:teachers,slug',
-            'description' => 'nullable',
+            'description' => 'required',
             'exp'         => 'required|numeric|min:0',
-            'image'       => 'nullable|max:255',
+            'image'       => 'required|max:255',
         ];
 
         // Nếu có ID → đang update
@@ -41,22 +41,27 @@ class TeachersRequest extends FormRequest
     public function messages()
     {
         return [
-            'name.required'        => __('teacher::validation.required'),
-            'slug.required'        => __('teacher::validation.required'),
-            'slug.unique'          => __('teacher::validation.unique'),
-            'exp.required'         => __('teacher::validation.required'),
-            'exp.numeric'          => __('teacher::validation.numeric'),
-            'exp.min'              => __('teacher::validation.min'),
+            'name.required'        => __('teachers::validation.required'),
+            'slug.required'        => __('teachers::validation.required'),
+            'slug.unique'          => __('teachers::validation.unique'),
+            'exp.required'         => __('teachers::validation.required'),
+
+            'exp.numeric'          => __('teachers::validation.numeric'),
+            'exp.min'              => __('teachers::validation.min'),
+
+            'description.required' => __('teachers::validation.required'),
+            'image.required'       => __('teachers::validation.required'),
+            'image.max'            => __('teachers::validation.max'),
         ];
     }
     public function attributes()
     {
         return [
-            'name'        => __('teacher::validation.attributes.name'),
-            'slug'        => __('teacher::validation.attributes.slug'),
-            'description' => __('teacher::validation.attributes.description'),
-            'exp'         => __('teacher::validation.attributes.exp'),
-            'image'       => __('teacher::validation.attributes.image'),
+            'name'        => __('teachers::validation.attributes.name'),
+            'slug'        => __('teachers::validation.attributes.slug'),
+            'description' => __('teachers::validation.attributes.description'),
+            'exp'         => __('teachers::validation.attributes.exp'),
+            'image'       => __('teachers::validation.attributes.image'),
         ];
     }
 }

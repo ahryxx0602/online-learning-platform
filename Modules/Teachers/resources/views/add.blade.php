@@ -51,7 +51,7 @@
                         type="number"
                         step="0.1"
                         class="form-control @error('exp') is-invalid @enderror"
-                        placeholder="VD: 3.5"
+                        placeholder="Số năm kinh nghiệm..."
                         value="{{ old('exp') }}"
                     >
                     @error('exp') <div class="invalid-feedback">{{ $message }}</div> @enderror
@@ -102,7 +102,8 @@
                     <textarea
                         name="description"
                         rows="4"
-                        class="form-control @error('description') is-invalid @enderror"
+                        placeholder="Mô tả..."
+                        class="form-control ckeditor @error('description') is-invalid @enderror"
                     >{{ old('description') }}</textarea>
                     @error('description') <div class="invalid-feedback">{{ $message }}</div> @enderror
                 </div>
