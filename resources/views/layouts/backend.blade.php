@@ -20,12 +20,14 @@
 
     <!-- Custom styles for this template-->
     <link href="{{asset('backend/css/sb-admin-2.min.css')}}" rel="stylesheet">
+    <!-- Custom global table styles -->
+    <link href="{{ asset('backend/css/admin-custom.css') }}" rel="stylesheet">
     {{-- ALLOW PAGE TO PUSH EXTRA CSS --}}
     @stack('styles')
     @yield('stylesheet')
 </head>
 
-<body id="page-top">
+<body id="page-top" class="admin-compact">
 
 <!-- Page Wrapper -->
 <div id="wrapper">
@@ -43,7 +45,7 @@
             @include('parts.backend.header')
             <!-- End of Topbar -->
             <!-- Begin Page Content -->
-            <div class="container-fluid">
+            <div class="container-fluid content-narrow">
 
                 <!-- Page Heading -->
                 @include('parts.backend.page_title')

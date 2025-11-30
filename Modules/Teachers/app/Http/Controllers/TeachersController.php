@@ -101,12 +101,12 @@ class TeachersController extends Controller
      */
     public function update(TeachersRequest $request, $id)
     {
-        $data = $request->only(['name', 'slug', 'description', 'exp', 'image']);
+        $data = $request->except('_token');
 
         $this->teachersRepository->update($id, $data);
 
         return redirect()->route('admin.teachers.index')
-            ->with('msg', 'Cập nhật giảng viên thành công!');
+            ->with('msg', __('teachers::messages.update.success'));
     }
 
     /**
@@ -116,7 +116,7 @@ class TeachersController extends Controller
     {
         $this->teachersRepository->delete($id);
 
-        return back()->with('msg', 'Xóa giảng viên thành công!');
+        return back()->with('msg', __('teachers::messages.update.success'));
     }
 
     /**
@@ -128,14 +128,14 @@ class TeachersController extends Controller
 
         if (empty($ids)) {
             return response()->json([
-                'message' => 'Vui lòng chọn ít nhất 1 giảng viên!'
+                'message' => __('teachers::messages.delete.success')
             ], 422);
         }
 
         $deleted = $this->teachersRepository->deleteMultiple($ids);
 
         return response()->json([
-            'message' => 'Đã xóa thành công!',
+            'message' => __('teachers::messages.delete.success'),
             'deleted' => $deleted
         ]);
     }

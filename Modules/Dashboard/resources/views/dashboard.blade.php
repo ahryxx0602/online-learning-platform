@@ -152,7 +152,7 @@
         .dashboard-card .col-auto i {
             transition: transform 0.25s ease, color 0.25s ease;
         }
-
+si
         .dashboard-card:hover .col-auto i {
             transform: scale(1.25); /* phóng icon */
             color: rgba(0,0,0,0.25) !important; /* nhạt nhẹ để nổi bật */

@@ -1,0 +1,76 @@
+/* ===== COMPACT ADMIN LAYOUT v2 (rất gọn) ===== */
+
+.admin-compact {
+    font-size: 0.8rem; /* ~13px cho toàn trang */
+}
+
+/* TOPBAR: thấp + ít margin hơn */
+.admin-compact .topbar {
+    min-height: 44px;
+    padding: 0.15rem 0.75rem;
+    margin-bottom: 0.25rem !important; /* sb-admin-2 gốc là mb-4 */
+}
+
+/* CONTENT: giảm padding + khoảng cách tiêu đề */
+.admin-compact .container-fluid.content-narrow {
+    padding-top: 0.35rem;
+    padding-bottom: 0.25rem;
+}
+
+.admin-compact .content-narrow .d-sm-flex,
+.admin-compact .content-narrow .breadcrumb {
+    margin-bottom: 0.25rem !important;
+}
+
+/* CARD: header/body mỏng + ít margin */
+.admin-compact .card-header.py-3 {
+    padding-top: 0.35rem !important;
+    padding-bottom: 0.35rem !important;
+}
+
+.admin-compact .card-body {
+    padding: 0.5rem 0.75rem;
+}
+
+.admin-compact .card.shadow.mb-4 {
+    margin-bottom: 0.5rem !important;
+}
+
+/* BẢNG: font nhỏ + padding siêu mỏng */
+.admin-compact .table {
+    font-size: 0.75rem;
+    margin-bottom: 0.25rem;
+}
+
+.admin-compact .table th,
+.admin-compact .table td {
+    padding: 0.2rem 0.4rem;
+}
+
+/* DataTables controls gọn hơn */
+.admin-compact .dataTables_wrapper .dataTables_length,
+.admin-compact .dataTables_wrapper .dataTables_filter,
+.admin-compact .dataTables_wrapper .dataTables_info,
+.admin-compact .dataTables_wrapper .dataTables_paginate {
+    font-size: 0.7rem;
+    margin-top: 0.2rem;
+    margin-bottom: 0.1rem;
+}
+
+/* FOOTER: siêu mỏng */
+.admin-compact footer.sticky-footer {
+    padding-top: 0.2rem;
+    padding-bottom: 0.2rem;
+    font-size: 0.7rem;
+}
+
+/* SIDEBAR: item thấp hơn chút */
+.admin-compact .sidebar .sidebar-brand {
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+}
+
+.admin-compact .sidebar .nav-item .nav-link {
+    padding-top: 0.4rem;
+    padding-bottom: 0.4rem;
+}
