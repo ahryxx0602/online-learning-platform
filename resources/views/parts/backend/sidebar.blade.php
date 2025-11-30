@@ -4,7 +4,7 @@
         <div class="sidebar-brand-icon rotate-n-15">
             <i class="fas fa-graduation-cap"></i>
         </div>
-        <div class="sidebar-brand-text mx-3">E-Learning Admin</div>
+        <div class="sidebar-brand-text mx-3">{{env('APP_NAME')}}</div>
     </a>
 
     <hr class="sidebar-divider my-0">

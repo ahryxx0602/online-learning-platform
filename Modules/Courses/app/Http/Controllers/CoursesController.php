@@ -158,7 +158,6 @@ class CoursesController extends Controller
                 'message' => 'Vui lòng chọn ít nhất 1 khóa học',
             ], 422);
         }
-
         // Lấy danh sách thumbnail trước khi xóa DB
         $thumbnails = [];
         foreach ($ids as $id) {
