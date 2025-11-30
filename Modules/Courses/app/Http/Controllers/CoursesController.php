@@ -135,7 +135,14 @@ class CoursesController extends Controller
      */
     public function delete($id)
     {
-        $this->coursesRepository->delete($id);
+        $course = $this->coursesRepository->find($id);
+
+        $status = $this->coursesRepository->delete($id);
+
+        if ($status && $course && $course->thumbnail) {
+            deleteImageFile($course->thumbnail);
+        }
+
         return back()->with('msg', __('courses::message.delete.success'));
     }
 
@@ -152,7 +159,24 @@ class CoursesController extends Controller
             ], 422);
         }
 
+        // Lấy danh sách thumbnail trước khi xóa DB
+        $thumbnails = [];
+        foreach ($ids as $id) {
+            $course = $this->coursesRepository->find($id);
+            if ($course && !empty($course->thumbnail)) {
+                $thumbnails[] = $course->thumbnail;
+            }
+        }
+
+        // Xóa trên DB
         $deleted = $this->coursesRepository->deleteMultiple($ids);
+
+        // Nếu xóa DB ok thì xóa luôn file ảnh
+        if ($deleted && !empty($thumbnails)) {
+            foreach ($thumbnails as $thumb) {
+                deleteImageFile($thumb);
+            }
+        }
 
         return response()->json([
             'message' => __('courses::message.delete.success'),

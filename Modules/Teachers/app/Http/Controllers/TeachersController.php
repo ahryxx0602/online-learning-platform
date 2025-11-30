@@ -3,6 +3,7 @@
 namespace Modules\Teachers\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\File;
 use Illuminate\Http\Request;
 use Modules\Teachers\App\Http\Requests\TeachersRequest;
 use Modules\Teachers\Repositories\TeachersRepository;
@@ -114,7 +115,13 @@ class TeachersController extends Controller
      */
     public function delete($id)
     {
-        $this->teachersRepository->delete($id);
+        $teacher = $this->teachersRepository->find($id);
+
+        $status = $this->teachersRepository->delete($id);
+    if($status){
+            $image = $teacher->image;
+            deleteImageFile($image);
+        }
 
         return back()->with('msg', __('teachers::messages.update.success'));
     }
@@ -128,15 +135,34 @@ class TeachersController extends Controller
 
         if (empty($ids)) {
             return response()->json([
-                'message' => __('teachers::messages.delete.success')
+                'message' => 'Vui lòng chọn ít nhất 1 giảng viên',
             ], 422);
         }
 
+        // Lấy danh sách teacher trước khi xoá DB để còn biết đường xoá file
+        $teachers = [];
+        foreach ($ids as $id) {
+            $teacher = $this->teachersRepository->find($id);
+            if ($teacher) {
+                $teachers[] = $teacher;
+            }
+        }
+
+        // Xóa trên DB
         $deleted = $this->teachersRepository->deleteMultiple($ids);
+
+        // Nếu xóa DB thành công thì xóa luôn file ảnh
+        if ($deleted && !empty($teachers)) {
+            foreach ($teachers as $teacher) {
+                if (!empty($teacher->image)) {
+                    deleteImageFile($teacher->image);
+                }
+            }
+        }
 
         return response()->json([
             'message' => __('teachers::messages.delete.success'),
-            'deleted' => $deleted
+            'deleted' => $deleted,
         ]);
     }
 }
