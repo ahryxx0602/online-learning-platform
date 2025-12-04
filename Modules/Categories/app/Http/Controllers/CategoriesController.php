@@ -5,14 +5,14 @@ namespace Modules\Categories\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Modules\Categories\app\Http\Requests\CategoriesRequest;
-use Modules\Categories\Repositories\CategoriesRepository;
+use Modules\Categories\Repositories\CategoriesRepositoryInterface;
 use Yajra\DataTables\Facades\DataTables;
 
 class CategoriesController extends Controller
 {
     protected $categoriesRepository;
 
-    public function __construct(CategoriesRepository $categoriesRepository)
+    public function __construct(CategoriesRepositoryInterface $categoriesRepository)
     {
         $this->categoriesRepository = $categoriesRepository;
     }

@@ -6,14 +6,14 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\File;
 use Illuminate\Http\Request;
 use Modules\Teachers\App\Http\Requests\TeachersRequest;
-use Modules\Teachers\Repositories\TeachersRepository;
+use Modules\Teachers\Repositories\TeachersRepositoryInterface;
 use Yajra\DataTables\Facades\DataTables;
 
 class TeachersController extends Controller
 {
     protected $teachersRepository;
 
-    public function __construct(TeachersRepository $teachersRepository)
+    public function __construct(TeachersRepositoryInterface $teachersRepository)
     {
         $this->teachersRepository = $teachersRepository;
     }

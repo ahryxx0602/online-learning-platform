@@ -30,7 +30,9 @@ class MakeModuleRepository extends Command
 
 namespace Modules\\$module\\Repositories;
 
-interface {$name}RepositoryInterface
+use App\\Repositories\\RepositoryInterface;
+
+interface {$name}RepositoryInterface extends RepositoryInterface
 {
     // Define methods here
 }

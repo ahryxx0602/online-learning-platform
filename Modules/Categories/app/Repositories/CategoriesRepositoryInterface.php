@@ -2,9 +2,10 @@
 
 namespace Modules\Categories\Repositories;
 
-interface CategoriesRepositoryInterface
-{
+use App\Repositories\RepositoryInterface;
 
+interface CategoriesRepositoryInterface extends RepositoryInterface
+{
     public function getCategories();
 
     public function getAllCategories();

@@ -2,7 +2,9 @@
 
 namespace Modules\User\Repositories;
 
-interface UserRepositoryInterface
+use App\Repositories\RepositoryInterface;
+
+interface UserRepositoryInterface extends RepositoryInterface
 {
     // Define methods here
     public function getUser($limit);

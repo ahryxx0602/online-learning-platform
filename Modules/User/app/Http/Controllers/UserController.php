@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Modules\User\app\Http\Requests\UserRequest;
-use Modules\User\Repositories\UserRepository;
+use Modules\User\Repositories\UserRepositoryInterface;
 use Yajra\DataTables\Facades\DataTables;
 
 class UserController extends Controller
@@ -14,7 +14,7 @@ class UserController extends Controller
 
     protected $userRepository;
 
-    public function __construct(UserRepository $userRepository)
+    public function __construct(UserRepositoryInterface $userRepository)
     {
         $this->userRepository = $userRepository;
     }

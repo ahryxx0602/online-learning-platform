@@ -2,8 +2,11 @@
 
 namespace Modules\Teachers\Repositories;
 
-interface TeachersRepositoryInterface
+use App\Repositories\RepositoryInterface;
+
+interface TeachersRepositoryInterface extends RepositoryInterface
 {
     public function getAllTeachers();
+
     public function deleteMultiple(array $ids);
 }

@@ -4,6 +4,8 @@ namespace Modules\Teachers\Providers;
 
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
+use Modules\Teachers\Repositories\TeachersRepository;
+use Modules\Teachers\Repositories\TeachersRepositoryInterface;
 use Nwidart\Modules\Traits\PathNamespace;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
@@ -36,6 +38,12 @@ class TeachersServiceProvider extends ServiceProvider
     {
         $this->app->register(EventServiceProvider::class);
         $this->app->register(RouteServiceProvider::class);
+
+        // Bind Repository
+        $this->app->bind(
+            TeachersRepositoryInterface::class,
+            TeachersRepository::class
+        );
     }
 
     /**
