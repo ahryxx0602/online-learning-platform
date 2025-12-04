@@ -14,7 +14,7 @@ use Modules\Courses\Http\Controllers\CoursesController;
 |
 */
 
-Route::group(['namespace' => 'Modules\Courses\Http\Controllers', 'middleware' => 'web'] , function () {
+Route::group(['namespace' => 'Modules\Courses\Http\Controllers', 'middleware' => ['web', 'auth']] , function () {
     Route::prefix('admin')->name('admin.')->group(function () {
         Route::prefix('courses')->name('courses.')->group(function () {
             Route::get("/", "CoursesController@index")->name('index');

@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::group(['namespace' => 'Modules\User\Http\Controllers', 'middleware' => 'web'] , function () {
+Route::group(['namespace' => 'Modules\User\Http\Controllers', 'middleware' => ['web', 'auth']] , function () {
     Route::prefix('admin')->name('admin.')->group(function () {
         Route::prefix('users')->name('users.')->group(function () {
             Route::get("/", "UserController@index")->name('index');

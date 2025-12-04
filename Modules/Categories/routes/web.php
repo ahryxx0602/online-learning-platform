@@ -14,7 +14,7 @@ use Modules\Categories\Http\Controllers\CategoriesController;
 |
 */
 
-Route::group(['namespace' => 'Modules\Categories\Http\Controllers', 'middleware' => 'web'] , function () {
+Route::group(['namespace' => 'Modules\Categories\Http\Controllers', 'middleware' => ['web', 'auth']] , function () {
     Route::prefix('admin')->name('admin.')->group(function () {
         Route::prefix('categories')->name('categories.')->group(function () {
             Route::get("/", "CategoriesController@index")->name('index');

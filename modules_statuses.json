@@ -4,5 +4,6 @@
     "Categories": true,
     "Courses": true,
     "Teacher": true,
-    "Teachers": true
+    "Teachers": true,
+    "Auth": true
 }
