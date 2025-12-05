@@ -7,5 +7,7 @@
     "Teachers": true,
     "Auth": true,
     "Lessions": true,
-    "Lessons": true
+    "Lessons": true,
+    "Videos": true,
+    "Documents": true
 }
