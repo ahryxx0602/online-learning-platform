@@ -26,19 +26,19 @@ class LessonsRequest extends FormRequest
         $rules = [
             'name'        => 'required|string|max:255',
             'slug'        => 'required|string|max:255|unique:lessons,slug',
-            'course_id'   => 'required|integer',
-            'video_id'    => 'nullable|integer',
-            'document_id' => 'nullable|integer',
-            'parent_id'   => 'nullable|integer',
-            'is_trial'    => 'sometimes|boolean',
-            'views'       => 'nullable|integer|min:0',
-            'position'    => 'nullable|integer',
-            'duration'    => 'nullable|numeric',
-            'description' => 'nullable|string',
+            'course_id'   => 'required|integer|exists:courses,id',
+            'video'       => 'required|string',
+            'document'    => 'nullable',
+            'parent_id'   => 'integer',
+            'is_trial'    => 'boolean',
+            'position'    => 'required|integer|min:0',
+            'description' => 'nullable',
         ];
 
         if ($id) {
             $rules['slug'] = 'required|string|max:255|unique:lessons,slug,'.$id;
+            // Khi update, course_id không bắt buộc (giữ nguyên course hiện tại)
+            $rules['course_id'] = 'nullable|integer|exists:courses,id';
         }
 
         return $rules;
@@ -47,19 +47,24 @@ class LessonsRequest extends FormRequest
     public function messages()
     {
         return [
-            'name.required'      => __('lessons::validation.required'),
-            'slug.required'      => __('lessons::validation.required'),
-            'slug.unique'        => __('lessons::validation.unique'),
-            'course_id.required' => __('lessons::validation.required'),
-            'course_id.integer'  => __('lessons::validation.integer'),
-            'video_id.integer'   => __('lessons::validation.integer'),
-            'document_id.integer'=> __('lessons::validation.integer'),
-            'parent_id.integer'  => __('lessons::validation.integer'),
-            'is_trial.boolean'   => __('lessons::validation.boolean'),
-            'views.integer'      => __('lessons::validation.integer'),
-            'views.min'          => __('lessons::validation.min'),
-            'position.integer'   => __('lessons::validation.integer'),
-            'duration.numeric'   => __('lessons::validation.numeric'),
+            'name.required'        => trans('lessons::validation.required', ['attribute' => __('lessons::validation.attributes.name')]),
+            'name.string'          => trans('lessons::validation.string', ['attribute' => __('lessons::validation.attributes.name')]),
+            'name.max'             => trans('lessons::validation.max', ['attribute' => __('lessons::validation.attributes.name')]),
+            'slug.required'        => trans('lessons::validation.required', ['attribute' => __('lessons::validation.attributes.slug')]),
+            'slug.string'          => trans('lessons::validation.string', ['attribute' => __('lessons::validation.attributes.slug')]),
+            'slug.unique'          => trans('lessons::validation.unique', ['attribute' => __('lessons::validation.attributes.slug')]),
+            'slug.max'             => trans('lessons::validation.max', ['attribute' => __('lessons::validation.attributes.slug')]),
+            'course_id.required'   => trans('lessons::validation.required', ['attribute' => __('lessons::validation.attributes.course_id')]),
+            'course_id.integer'    => trans('lessons::validation.integer', ['attribute' => __('lessons::validation.attributes.course_id')]),
+            'course_id.exists'     => trans('lessons::validation.exists', ['attribute' => __('lessons::validation.attributes.course_id')]),
+            'video.required'       => trans('lessons::validation.required', ['attribute' => __('lessons::validation.attributes.video')]),
+            'video.string'         => trans('lessons::validation.string', ['attribute' => __('lessons::validation.attributes.video')]),
+            'document.string'      => trans('lessons::validation.string', ['attribute' => __('lessons::validation.attributes.document')]),
+            'parent_id.integer'    => trans('lessons::validation.integer', ['attribute' => __('lessons::validation.attributes.parent_id')]),
+            'is_trial.boolean'     => trans('lessons::validation.boolean', ['attribute' => __('lessons::validation.attributes.is_trial')]),
+            'position.required'    => trans('lessons::validation.required', ['attribute' => __('lessons::validation.attributes.position')]),
+            'position.integer'     => trans('lessons::validation.integer', ['attribute' => __('lessons::validation.attributes.position')]),
+            'position.min'         => trans('lessons::validation.min', ['attribute' => __('lessons::validation.attributes.position')]),
         ];
     }
 
@@ -69,13 +74,11 @@ class LessonsRequest extends FormRequest
             'name'        => __('lessons::validation.attributes.name'),
             'slug'        => __('lessons::validation.attributes.slug'),
             'course_id'   => __('lessons::validation.attributes.course_id'),
-            'video_id'    => __('lessons::validation.attributes.video_id'),
-            'document_id' => __('lessons::validation.attributes.document_id'),
+            'video'       => __('lessons::validation.attributes.video'),
+            'document'    => __('lessons::validation.attributes.document'),
             'parent_id'   => __('lessons::validation.attributes.parent_id'),
             'is_trial'    => __('lessons::validation.attributes.is_trial'),
-            'views'       => __('lessons::validation.attributes.views'),
             'position'    => __('lessons::validation.attributes.position'),
-            'duration'    => __('lessons::validation.attributes.duration'),
             'description' => __('lessons::validation.attributes.description'),
         ];
     }

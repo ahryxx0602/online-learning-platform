@@ -1,7 +1,8 @@
 @extends('layouts.backend')
 @section('content')
-    <form action="" method="post">
+    <form action="{{ route('admin.lessons.store') }}" method="post">
         @csrf
+        <input type="hidden" name="course_id" value="{{ old('course_id', request('courseId')) }}">
         <div class="row">
             <div class="col-6">
                 <div class="mb-3">
@@ -40,8 +41,8 @@
             <div class="col-4">
                 <div class="mb-3">
                     <label for="parent_id">Nhóm bài giảng</label>
-                    <select name="parent_id" class="form-control">
-                        <option value="0">Trống</option>
+                    <select name="parent_id" class="form-control @error('parent_id') is-invalid @enderror">
+                        <option value="">Trống</option>
                     </select>
                     @error('parent_id')
                     <div class="invalid-feedback">{{ $message }}</div>
@@ -52,9 +53,9 @@
             <div class="col-4">
                 <div class="mb-3">
                     <label for="is_trial">Học thử</label>
-                    <select name="is_trial" class="form-control">
-                        <option value="0">Không</option>
-                        <option value="1">Có</option>
+                    <select name="is_trial" class="form-control @error('is_trial') is-invalid @enderror">
+                        <option value="0" {{ old('is_trial', 0) == 0 ? 'selected' : '' }}>Không</option>
+                        <option value="1" {{ old('is_trial') == 1 ? 'selected' : '' }}>Có</option>
                     </select>
                     @error('is_trial')
                     <div class="invalid-feedback">{{ $message }}</div>
@@ -72,6 +73,7 @@
                         class="form-control @error('position') is-invalid @enderror"
                         placeholder="Ví dụ: 1"
                         value="{{ old('position', 0) }}"
+                        min="0"
                     >
                     @error('position')
                     <div class="invalid-feedback">{{ $message }}</div>
@@ -83,29 +85,51 @@
                 <div class="mb-3">
                     <label for="video_id">Video</label>
                     <div class="input-group">
-                        <input type="text" name="video" id="video-url" 
-                        class="form-control" placeholder="Video bài giảng" disabled/>
-                        <button type="submit" 
-                                class="btn btn-success"
-                                id="lfm-video" data-input="video-url">Chọn</button>
+                        <input 
+                            type="text" 
+                            name="video" 
+                            id="video-url" 
+                            class="form-control @error('video') is-invalid @enderror" 
+                            placeholder="Video bài giảng"
+                            value="{{ old('video') }}"
+                        />
+                        <button 
+                            type="button" 
+                            class="btn btn-success"
+                            id="lfm-video" 
+                            data-input="video-url"
+                        >
+                            Chọn Video
+                        </button>
                     </div>
-                    @error('video_id')
-                    <div class="invalid-feedback">{{ $message }}</div>
+                    @error('video')
+                    <div class="invalid-feedback d-block">{{ $message }}</div>
                     @enderror
                 </div>
             </div>
 
             <div class="col-4">
                 <div class="mb-3">
-                    <label for="document_id">Tài liệu</label>
+                    <label for="document-url">Tài liệu</label>
                     <div class="input-group">
-                        <input type="text" name="document" id="document-url" 
-                        class="form-control" placeholder="Tài liệu bài giảng" disabled/>
-                        <button type="submit" 
-                                class="btn btn-success"
-                                id="lfm-document" data-input="document-url">Chọn</button>
+                        <input 
+                            type="text" 
+                            name="document" 
+                            id="document-url" 
+                            class="form-control @error('document') is-invalid @enderror" 
+                            placeholder="Tài liệu bài giảng"
+                            value="{{ old('document') }}"
+                        />
+                        <button 
+                            type="button" 
+                            class="btn btn-success"
+                            id="lfm-document" 
+                            data-input="document-url"
+                        >
+                            Chọn Tài liệu
+                        </button>
                     </div>
-                    @error('document_id')
+                    @error('document')
                     <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
                 </div>

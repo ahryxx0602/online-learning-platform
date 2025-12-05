@@ -5,6 +5,8 @@ namespace Modules\Lessons\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Modules\Courses\Models\Course;
+use Modules\Videos\Models\Video;
+use Modules\Documents\Models\Document;
 // use Modules\Lessons\Database\Factories\LessonFactory;
 
 class Lesson extends Model
@@ -52,6 +54,22 @@ class Lesson extends Model
     public function children()
     {
         return $this->hasMany(Lesson::class, 'parent_id', 'id');
+    }
+
+    /**
+     * Relationship với Video
+     */
+    public function video()
+    {
+        return $this->belongsTo(Video::class, 'video_id', 'id');
+    }
+
+    /**
+     * Relationship với Document
+     */
+    public function document()
+    {
+        return $this->belongsTo(Document::class, 'document_id', 'id');
     }
 
     // protected static function newFactory(): LessonFactory
