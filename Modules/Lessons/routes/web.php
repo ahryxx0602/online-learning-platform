@@ -18,8 +18,10 @@ Route::middleware('auth')
     ->prefix('admin/lessons')
     ->name('admin.lessons.')
     ->group(function () {
-        Route::get('/{courseId}', [LessonsController::class, 'index'])->name('index');
         Route::get('/data', [LessonsController::class, 'data'])->name('data');
+        Route::get('/{courseId}', [LessonsController::class, 'index'])
+            ->whereNumber('courseId')
+            ->name('index');
         Route::get('/create', [LessonsController::class, 'create'])->name('create');
         Route::post('/create', [LessonsController::class, 'store'])->name('store');
         Route::get('/edit/{lesson}', [LessonsController::class, 'edit'])->name('edit');

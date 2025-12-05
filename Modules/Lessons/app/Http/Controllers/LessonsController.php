@@ -4,9 +4,11 @@ namespace Modules\Lessons\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Modules\Lessons\App\Http\Requests\LessonsRequest;
 use Modules\Courses\Repositories\CoursesRepositoryInterface;
 use Modules\Lessons\Repositories\LessonsRepositoryInterface;
 use Yajra\DataTables\Facades\DataTables;
+use Illuminate\Support\Facades\Validator;
 
 class LessonsController extends Controller
 {
@@ -72,15 +74,24 @@ class LessonsController extends Controller
      */
     public function create()
     {
-        return view('lessons::create');
+        $pageTitle = 'Thêm bài giảng';
+        return view('lessons::add', compact('pageTitle'));
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(LessonsRequest $request)
     {
-        //
+        $data = $request->validated();
+        $data['is_trial'] = $request->boolean('is_trial');
+        $data['views'] = $data['views'] ?? 0;
+
+        $lesson = $this->lessonsRepository->create($data);
+
+        return redirect()
+            ->route('admin.lessons.index', ['courseId' => $lesson->course_id ?? ''])
+            ->with('msg', __('lessons::message.create.success'));
     }
 
     /**
@@ -96,7 +107,10 @@ class LessonsController extends Controller
      */
     public function edit($id)
     {
-        return view('lessons::edit');
+        $lesson = $this->lessonsRepository->find($id);
+        $pageTitle = 'Cập nhật bài giảng';
+
+        return view('lessons::edit', compact('lesson', 'pageTitle'));
     }
 
     /**
