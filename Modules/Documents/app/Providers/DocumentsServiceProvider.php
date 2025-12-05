@@ -4,6 +4,8 @@ namespace Modules\Documents\Providers;
 
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
+use Modules\Documents\Repositories\DocumentsRepository;
+use Modules\Documents\Repositories\DocumentsRepositoryInterface;
 use Nwidart\Modules\Traits\PathNamespace;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
@@ -36,6 +38,10 @@ class DocumentsServiceProvider extends ServiceProvider
     {
         $this->app->register(EventServiceProvider::class);
         $this->app->register(RouteServiceProvider::class);
+        $this->app->bind(
+            DocumentsRepositoryInterface::class,
+            DocumentsRepository::class
+        );
     }
 
     /**

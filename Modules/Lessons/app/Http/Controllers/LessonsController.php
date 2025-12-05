@@ -11,22 +11,26 @@ use Modules\Videos\Models\Video;
 use Modules\Documents\Models\Document;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\Validator;
+use Modules\Documents\Repositories\DocumentsRepositoryInterface;
 use Modules\Videos\Repositories\VideosRepositoryInterface;
+use Illuminate\Support\Facades\Storage;
 
 class LessonsController extends Controller
 {
     protected $lessonsRepository;
     protected $coursesRepository;
     protected $videosRepository;
-
+    protected $documentsRepository;
     public function __construct(
         LessonsRepositoryInterface $lessonsRepository,
         CoursesRepositoryInterface $coursesRepository,
-        VideosRepositoryInterface $videosRepository
+        VideosRepositoryInterface $videosRepository,
+        DocumentsRepositoryInterface $documentsRepository
     ) {
         $this->lessonsRepository = $lessonsRepository;
         $this->coursesRepository = $coursesRepository;
         $this->videosRepository = $videosRepository;
+        $this->documentsRepository = $documentsRepository;
     }
 
     /**
@@ -90,11 +94,21 @@ class LessonsController extends Controller
      */
     public function store(LessonsRequest $request)
     {
-        $video = $request->video;
-        $result = $this->videosRepository->createVideo([
-            'name' => $request->name . ' - Video',
-            'url' => $video,
+        // $video = $request->video;
+        // $this->videosRepository->createVideo([
+        //     'url' => $video,
+        // ]);
+
+        $path = Storage::disk('public')->path(str_replace('storage/', '', 
+        $request->document));
+        $name = basename($path);
+
+        $result = $this->documentsRepository->createDocument([
+            'name' => $name,
+            'url' => $request->document,
+            'size' => filesize($path),
         ]);
+
         $data = $request->validated();
         
         // Xử lý is_trial (convert string "0"/"1" thành boolean)

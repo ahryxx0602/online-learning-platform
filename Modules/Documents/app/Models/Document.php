@@ -17,7 +17,7 @@ class Document extends Model
     protected $fillable = [
         'name',
         'url',
-        'size',
+        'size'
     ];
 }
 
