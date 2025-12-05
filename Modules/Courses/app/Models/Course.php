@@ -5,6 +5,8 @@ namespace Modules\Courses\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Modules\Categories\Models\Category;
+use Modules\Teachers\Models\Teacher;
+
 // use Modules\Courses\Database\Factories\CoursesFactory;
 
 class Course extends Model
@@ -34,7 +36,7 @@ class Course extends Model
 
     public function teacher()
     {
-        return $this->belongsTo(\Modules\User\Models\User::class, 'teacher_id', 'id');
+        return $this->belongsTo(Teacher::class, 'teacher_id', 'id');    
     }
 
     public function categories()

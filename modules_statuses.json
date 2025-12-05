@@ -5,5 +5,7 @@
     "Courses": true,
     "Teacher": true,
     "Teachers": true,
-    "Auth": true
+    "Auth": true,
+    "Lessions": true,
+    "Lessons": true
 }

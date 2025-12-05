@@ -2,12 +2,12 @@
 
 @section('content')
     <div class="d-flex mb-3">
-        <a href="{{ route('admin.courses.create') }}" class="btn btn-primary mr-2">Thêm mới</a>
+        <a href="{{ route('admin.lessons.create', ['courseId' => $courseId ?? '']) }}" class="btn btn-primary mr-2">Thêm mới</a>
         <button
             type="button"
             class="btn btn-danger"
             id="bulk-delete-btn"
-            data-url="{{ route('admin.courses.deleteMultiple') }}"
+            data-url="{{ route('admin.lessons.deleteMultiple') }}"
             disabled
         >
             Xóa đã chọn
@@ -22,7 +22,7 @@
 
     <div class="card shadow mb-4">
         <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-primary">Danh sách khóa học</h6>
+            <h6 class="m-0 font-weight-bold text-primary">Danh sách bài giảng</h6>
         </div>
 
         <div class="card-body">
@@ -33,19 +33,21 @@
                         <th width="30">
                             <input type="checkbox" id="check-all">
                         </th>
-                        <th>Tên khóa học</th>
-                        <th>Giảng viên</th>
-                        <th>Giá</th>
-                        <th>Trạng thái</th>
+                        <th>Tên bài giảng</th>
+                        <th>Học thử</th>
+                        <th>Lượt xem</th>
+                        <th>Thứ tự</th>
+                        <th>Ngày tạo</th>
                         <th>Sửa</th>
                         <th>Xóa</th>
-                        <th>Bài giảng</th>
                     </tr>
                     </thead>
                 </table>
             </div>
         </div>
     </div>
+    <a href="{{ route('admin.courses.index') }}" class="btn btn-secondary text-white mr-2">Quay lại danh sách khóa học</a>
+
 
     @include('parts.backend.delete-action')
 @endsection
@@ -60,43 +62,47 @@
 
     <script>
         $(document).ready(function () {
+            const courseId = "{{ $courseId ?? 'null' }}";
+            const ajaxUrl = courseId 
+                ? "{{ route('admin.lessons.data') }}?course_id=" + courseId
+                : "{{ route('admin.lessons.data') }}";
 
             const table = $('#dataTable').DataTable({
                 processing: true,
                 serverSide: true,
-                ajax: "{{ route('admin.courses.data') }}",
+                ajax: ajaxUrl,
                 columns: [
                     { data: "select", orderable: false, searchable: false },
                     { data: "name" },
-                    { data: "teacher.name" },
+                    { data: "position" },
                     {
-                        data: "price",
-                        render: function (data, type, row) {
-
-                            // Nếu không có giá hoặc giá = 0
-                            if (!data || data == 0) {
-                                return '<span class="badge badge-success">Miễn phí</span>';
-                            }
-
-                            // Ngược lại: hiển thị format tiền
-                            return new Intl.NumberFormat('vi-VN').format(data) + 'đ';
+                        data: "views",
+                        render: function (data) {
+                            return data || 0;
                         }
                     },
                     {
-                        data: "status",
+                        data: "is_trial",
                         render: function (data) {
                             return data == 1
-                                ? '<span class="badge badge-success">Đã ra mắt</span>'
-                                : '<span class="badge badge-secondary">Chưa ra mắt</span>';
+                                ? '<span class="badge badge-success">Có</span>'
+                                : '<span class="badge badge-secondary">Không</span>';
+                        }
+                    },
+                    {
+                        data: "created_at",
+                        render: function (data) {
+                            if (!data) return '—';
+                            let d = new Date(data.replace(' ', 'T'));
+                            return d.toLocaleDateString('vi-VN') + ' ' + d.toLocaleTimeString('vi-VN');
                         }
                     },
                     { data: "edit", orderable: false, searchable: false },
                     { data: "delete", orderable: false, searchable: false },
-                    { data: "lessons", orderable: false, searchable: false },
                 ]
             });
 
-            window.courseDataTable = table;
+            window.lessonDataTable = table;
 
             // Reset checkbox after reload
             table.on('draw', function () {
@@ -108,7 +114,6 @@
                     window.updateBulkDeleteState();
                 }
             });
-
         });
     </script>
 @endpush

@@ -41,6 +41,11 @@ class CoursesController extends Controller
     {
         $courses = $this->coursesRepository->getAllCourses();
         return DataTables::of($courses)
+            ->addColumn('lessons', function ($course) {
+                return '<a href="' . route("admin.lessons.index", $course->id) . '" class="btn btn-primary btn-sm">
+                <i class="fa fa-list"></i> Bài giảng
+            </a>';
+            })
             ->addColumn('select', function ($course) {
                 return '<input type="checkbox" class="row-check" value="' . $course->id . '">';
             })
@@ -60,7 +65,7 @@ class CoursesController extends Controller
             ->editColumn('created_at', function ($course) {
                 return $course->created_at?->format('Y-m-d H:i:s');
             })
-            ->rawColumns(['select', 'edit', 'delete'])
+            ->rawColumns(['select', 'edit', 'delete', 'lessons'])
             ->toJson();
     }
 
