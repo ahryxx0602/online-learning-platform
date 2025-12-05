@@ -11,18 +11,22 @@ use Modules\Videos\Models\Video;
 use Modules\Documents\Models\Document;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\Validator;
+use Modules\Videos\Repositories\VideosRepositoryInterface;
 
 class LessonsController extends Controller
 {
     protected $lessonsRepository;
     protected $coursesRepository;
+    protected $videosRepository;
 
     public function __construct(
         LessonsRepositoryInterface $lessonsRepository,
-        CoursesRepositoryInterface $coursesRepository
+        CoursesRepositoryInterface $coursesRepository,
+        VideosRepositoryInterface $videosRepository
     ) {
         $this->lessonsRepository = $lessonsRepository;
         $this->coursesRepository = $coursesRepository;
+        $this->videosRepository = $videosRepository;
     }
 
     /**
@@ -86,6 +90,11 @@ class LessonsController extends Controller
      */
     public function store(LessonsRequest $request)
     {
+        $video = $request->video;
+        $result = $this->videosRepository->createVideo([
+            'name' => $request->name . ' - Video',
+            'url' => $video,
+        ]);
         $data = $request->validated();
         
         // Xử lý is_trial (convert string "0"/"1" thành boolean)

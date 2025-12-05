@@ -4,6 +4,8 @@ namespace Modules\Videos\Providers;
 
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
+use Modules\Videos\Repositories\VideosRepository;
+use Modules\Videos\Repositories\VideosRepositoryInterface;
 use Nwidart\Modules\Traits\PathNamespace;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
@@ -36,6 +38,10 @@ class VideosServiceProvider extends ServiceProvider
     {
         $this->app->register(EventServiceProvider::class);
         $this->app->register(RouteServiceProvider::class);
+        $this->app->bind(
+            VideosRepositoryInterface::class,
+            VideosRepository::class
+        );
     }
 
     /**
