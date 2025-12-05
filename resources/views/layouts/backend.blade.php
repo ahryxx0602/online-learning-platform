@@ -114,6 +114,9 @@
 <script>
 
     $('#lfm').filemanager('image');
+    $('#lfm-file').filemanager('file');
+    $('#lfm-video').filemanager('video');
+    $('#lfm-document').filemanager('document');
 </script>
 @stack('scripts')
 </body>

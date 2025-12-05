@@ -83,8 +83,11 @@
                 <div class="mb-3">
                     <label for="video_id">Video</label>
                     <div class="input-group">
-                        <input type="" class="form-control" placeholder="Video bài giảng" disabled/>
-                        <button class="btn btn-success">Chọn</button>
+                        <input type="text" name="video" id="video-url" 
+                        class="form-control" placeholder="Video bài giảng" disabled/>
+                        <button type="submit" 
+                                class="btn btn-success"
+                                id="lfm-video" data-input="video-url">Chọn</button>
                     </div>
                     @error('video_id')
                     <div class="invalid-feedback">{{ $message }}</div>
@@ -96,8 +99,11 @@
                 <div class="mb-3">
                     <label for="document_id">Tài liệu</label>
                     <div class="input-group">
-                        <input type="" class="form-control" placeholder="Tài liệu bài giảng" disabled/>
-                        <button class="btn btn-success">Chọn</button>
+                        <input type="text" name="document" id="document-url" 
+                        class="form-control" placeholder="Tài liệu bài giảng" disabled/>
+                        <button type="submit" 
+                                class="btn btn-success"
+                                id="lfm-document" data-input="document-url">Chọn</button>
                     </div>
                     @error('document_id')
                     <div class="invalid-feedback">{{ $message }}</div>

@@ -68,6 +68,39 @@ return [
                 'text/plain',
             ],
         ],
+        'video'  => [
+            'folder_name'  => 'videos',
+            'startup_view' => 'list',
+            'max_size'     => 1048576, // size in KB
+            'thumb' => true,
+            'thumb_width' => 80,
+            'thumb_height' => 80,
+            'valid_mime'   => [
+                'video/mp4',
+                'video/mov',
+                'video/mkv',
+                'video/avi',
+                'video/webm',
+            ],
+        ],
+        'document'  => [
+            'folder_name'  => 'documents',
+            'startup_view' => 'list',
+            'max_size'     => 10240, // size in KB
+            'thumb' => true,
+            'thumb_width' => 80,
+            'thumb_height' => 80,
+            'valid_mime'   => [
+                'application/pdf',
+                'application/msword', // .doc
+                'application/vnd.openxmlformats-officedocument.wordprocessingml.document', // .docx
+                'application/vnd.ms-excel', // .xls
+                'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', // .xlsx
+                'application/vnd.ms-powerpoint', // .ppt
+                'application/vnd.openxmlformats-officedocument.presentationml.presentation', // .pptx
+                'text/plain', // .txt
+            ],
+        ],
         'image' => [
             'folder_name'  => 'photos',
             'startup_view' => 'grid',
