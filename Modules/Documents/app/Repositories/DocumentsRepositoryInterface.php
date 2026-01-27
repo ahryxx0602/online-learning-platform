@@ -7,5 +7,5 @@ use App\Repositories\RepositoryInterface;
 interface DocumentsRepositoryInterface extends RepositoryInterface
 {
     // Define methods here
-    public function createDocument($data);
+    public function createDocument($data, $url);
 }

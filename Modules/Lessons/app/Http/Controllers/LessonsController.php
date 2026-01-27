@@ -94,55 +94,26 @@ class LessonsController extends Controller
      */
     public function store(LessonsRequest $request)
     {
-        // $video = $request->video;
-        // $this->videosRepository->createVideo([
-        //     'url' => $video,
-        // ]);
+        //Video
+        $video = $request->video;
+        $videoInfo = getVideoInfo($video);
+        $result = $this->videosRepository->createVideo([
+            'url' => $video, 
+            'name' => $videoInfo['fileName'], 
+            'size' => $videoInfo['playtime_seconds']], 
+            $video
+        );
 
-        $path = Storage::disk('public')->path(str_replace('storage/', '', 
-        $request->document));
-        $name = basename($path);
-
+        //Document
+        $document = $request->document;
+        $documentInfo = getFileInfo($document);
         $result = $this->documentsRepository->createDocument([
-            'name' => $name,
-            'url' => $request->document,
-            'size' => filesize($path),
-        ]);
+            'url' => $document,
+            'name' => $documentInfo['fileName'],
+            'size' => $documentInfo['size']
+        ], $document);
+        dd($result);
 
-        $data = $request->validated();
-        
-        // Xử lý is_trial (convert string "0"/"1" thành boolean)
-        $data['is_trial'] = $request->input('is_trial', 0) == 1;
-        
-        // Set giá trị mặc định
-        $data['views'] = $data['views'] ?? 0;
-        $data['parent_id'] = $data['parent_id'] ?? null;
-        
-        // Xử lý video URL - tạo record trong bảng videos nếu có
-        if (!empty($data['video'])) {
-            $video = Video::create([
-                'name' => $data['name'] . ' - Video',
-                'url' => $data['video'],
-            ]);
-            $data['video_id'] = $video->id;
-        }
-        unset($data['video']); // Xóa field video khỏi data
-        
-        // Xử lý document URL - tạo record trong bảng documents nếu có
-        if (!empty($data['document'])) {
-            $document = Document::create([
-                'name' => $data['name'] . ' - Document',
-                'url' => $data['document'],
-            ]);
-            $data['document_id'] = $document->id;
-        }
-        unset($data['document']); // Xóa field document khỏi data
-
-        $lesson = $this->lessonsRepository->create($data);
-
-        return redirect()
-            ->route('admin.lessons.index', ['courseId' => $lesson->course_id])
-            ->with('msg', __('lessons::message.create.success'));
     }
 
     /**

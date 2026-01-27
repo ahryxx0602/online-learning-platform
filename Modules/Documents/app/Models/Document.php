@@ -19,5 +19,8 @@ class Document extends Model
         'url',
         'size'
     ];
+    protected $attributes = [
+        'size' => 0,
+    ];
 }
 

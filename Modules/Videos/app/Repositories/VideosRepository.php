@@ -11,7 +11,8 @@ class VideosRepository extends BaseRepository implements VideosRepositoryInterfa
     {
         return Video::class;
     }
-    public function createVideo($data){
-        return $this->model->firstOrCreate($data);
+    public function createVideo($data, $url){
+        return $this->model->firstOrCreate(['url' => $url], $data);
     }
 }
+    
