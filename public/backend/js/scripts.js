@@ -10,6 +10,7 @@ const getSelectedIds = () =>
         (item) => item.value
     );
 
+    
 const updateBulkDeleteState = () => {
     if (!bulkDeleteBtn) {
         return;
@@ -161,7 +162,14 @@ function convertToSlug(text) {
         .replace(/-+/g, "-"); // gộp dấu - liên tiếp
 }
 
+
 // Auto generate slug when typing name
 document.getElementById("name").addEventListener("keyup", function () {
     document.getElementById("slug").value = convertToSlug(this.value);
+});
+$(document).ready(function() {
+    // Kiểm tra xem element có tồn tại không trước khi chạy để tránh lỗi
+    if ($('.js-example-basic-single').length > 0) {
+        $('.js-example-basic-single').select2();
+    }
 });

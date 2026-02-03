@@ -3,18 +3,13 @@
 @section('content')
     <div class="d-flex mb-3">
         <a href="{{ route('admin.lessons.create', ['courseId' => $courseId]) }}" class="btn btn-primary mr-2">Thêm mới</a>
-        <button
-            type="button"
-            class="btn btn-danger"
-            id="bulk-delete-btn"
-            data-url="{{ route('admin.lessons.deleteMultiple') }}"
-            disabled
-        >
+        <button type="button" class="btn btn-danger" id="bulk-delete-btn"
+            data-url="{{ route('admin.lessons.deleteMultiple') }}" disabled>
             Xóa đã chọn
         </button>
     </div>
 
-    @if(session('msg'))
+    @if (session('msg'))
         <div class="alert alert-success">
             {{ session('msg') }}
         </div>
@@ -29,18 +24,18 @@
             <div class="table-responsive">
                 <table class="table table-bordered table-sm" id="dataTable" width="100%">
                     <thead>
-                    <tr>
-                        <th width="30">
-                            <input type="checkbox" id="check-all">
-                        </th>
-                        <th>Tên bài giảng</th>
-                        <th>Học thử</th>
-                        <th>Lượt xem</th>
-                        <th>Thứ tự</th>
-                        <th>Ngày tạo</th>
-                        <th>Sửa</th>
-                        <th>Xóa</th>
-                    </tr>
+                        <tr>
+                            <th width="30">
+                                <input type="checkbox" id="check-all">
+                            </th>
+                            <th>Tên bài giảng</th>
+                            <th>Học thử</th>
+                            <th>Lượt xem</th>
+                            <th>Thời lượng</th>
+                            <th>Ngày tạo</th>
+                            <th>Sửa</th>
+                            <th>Xóa</th>
+                        </tr>
                     </thead>
                 </table>
             </div>
@@ -61,49 +56,77 @@
     <script src="{{ asset('backend/vendor/datatables/dataTables.bootstrap4.min.js') }}"></script>
 
     <script>
-        $(document).ready(function () {
-            const courseId = "{{ $courseId ?? 'null' }}";
+        $(document).ready(function() {
             const ajaxUrl = "{{ route('admin.lessons.data', ['courseId' => $courseId]) }}";
 
             const table = $('#dataTable').DataTable({
                 processing: true,
                 serverSide: true,
                 ajax: ajaxUrl,
-                columns: [
-                    { data: "select", orderable: false, searchable: false },
-                    { data: "name" },
-                    { data: "position" },
+                columns: [{
+                        data: "select",
+                        orderable: false,
+                        searchable: false
+                    },
                     {
-                        data: "views",
-                        render: function (data) {
-                            return data || 0;
-                        }
+                        data: "name",
+                        orderable: false,
+                        searchable: false
                     },
                     {
                         data: "is_trial",
-                        render: function (data) {
-                            return data == 1
-                                ? '<span class="badge badge-success">Có</span>'
-                                : '<span class="badge badge-secondary">Không</span>';
-                        }
+                        orderable: false,
+                        searchable: false
+                    },
+                    {
+                        data: "views",
+                        orderable: false,
+                        searchable: false
+                    },
+                    {
+                        data: "duration",
+                        orderable: false,
+                        searchable: false
                     },
                     {
                         data: "created_at",
-                        render: function (data) {
-                            if (!data) return '—';
-                            let d = new Date(data.replace(' ', 'T'));
-                            return d.toLocaleDateString('vi-VN') + ' ' + d.toLocaleTimeString('vi-VN');
+                        orderable: false,
+                        searchable: false
+                    },
+                    {
+                        data: "edit",
+                        orderable: false,
+                        searchable: false
+                    },
+                    {
+                        data: "delete",
+                        orderable: false,
+                        searchable: false
+                    },
+                ],
+                columnDefs: [{
+                        targets: 2,
+                        render: function(data) {
+                            return data;
                         }
                     },
-                    { data: "edit", orderable: false, searchable: false },
-                    { data: "delete", orderable: false, searchable: false },
-                ]
+                    {
+                        targets: 4,
+                        render: function(data) {
+                            return data;
+                        }
+                    }
+                ],
+                rowCallback: function(row, data, index) {
+                    // No additional processing needed
+                }
             });
 
-            window.lessonDataTable = table;
+            // Đảm bảo các cột HTML được render đúng
+            $.fn.dataTable.ext.errMode = 'none';
 
-            // Reset checkbox after reload
-            table.on('draw', function () {
+            window.lessonDataTable = table;
+            table.on('draw', function() {
                 const masterCheckbox = document.getElementById('check-all');
                 if (masterCheckbox) {
                     masterCheckbox.checked = false;

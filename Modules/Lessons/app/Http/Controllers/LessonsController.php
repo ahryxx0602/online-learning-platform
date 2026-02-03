@@ -40,11 +40,11 @@ class LessonsController extends Controller
     public function index($courseId)
     {
         $course = $this->coursesRepository->find($courseId);
-        
+
         if (!$course) {
             abort(404, 'Khóa học không tồn tại');
         }
-        
+
         $pageTitle = 'Bài giảng: ' . $course->name;
         return view('lessons::list', compact('courseId', 'pageTitle', 'course'));
     }
@@ -52,36 +52,76 @@ class LessonsController extends Controller
     /**
      * Get data for DataTables
      */
-    public function data(Request $request)
+    public function data(Request $request, $courseId)
     {
-        $courseId = $request->get('course_id'); 
-        
-        $lessons = $this->lessonsRepository->getAllLessons($courseId);
-        
-        return DataTables::of($lessons)
-            ->addColumn('select', function ($lesson) {
-                return '<input type="checkbox" class="row-check" value="' . $lesson->id . '">';
-            })
-            ->addColumn('edit', function ($lesson) {
-                // Route 'admin.lessons.edit' chỉ cần {lessonId}, không cần courseId
-                return '<a href="' . route("admin.lessons.edit", $lesson->id) . '" class="btn btn-warning btn-sm">
-                    <i class="fa fa-edit"></i> Sửa
-                </a>';
-            })
-            ->addColumn('delete', function ($lesson) {
-                $deleteUrl = route("admin.lessons.delete", $lesson->id);
-                return '<button type="button" class="btn btn-danger delete-action btn-sm" data-url="' . $deleteUrl . '">
-                    <i class="fa fa-trash"></i> Xóa
-                </button>';
-            })
-            ->editColumn('is_trial', function ($lesson) {
-                return $lesson->is_trial; // Để JS tự render badge như bạn đã viết
-            })
-            ->editColumn('created_at', function ($lesson) {
-                return $lesson->created_at?->format('Y-m-d H:i:s');
-            })
-            ->rawColumns(['select', 'edit', 'delete'])
-            ->toJson();
+        // Lấy lessons theo phân cấp (parent trước, rồi đến con)
+        $parentLessons = $this->lessonsRepository->getLessonsByHierarchy($courseId);
+
+        // Chuyển thành danh sách phẳng với indentation
+        $flatLessons = $this->getLessonsTable($parentLessons->toArray());
+
+        // Trả về dữ liệu dạng DataTable
+        return response()->json([
+            'draw' => intval($request->get('draw')),
+            'recordsTotal' => count($flatLessons),
+            'recordsFiltered' => count($flatLessons),
+            'data' => $flatLessons,
+        ]);
+    }
+
+    /**
+     * Chuyển đổi danh sách bài giảng thành cấu trúc phân cấp
+     */
+    public function getLessonsTable($lessons, $char = '', &$result = [])
+    {
+        if (!empty($lessons)) {
+            foreach ($lessons as $key => $lesson) {
+                $row = (array) $lesson;
+                $row['select'] = '<input type="checkbox" class="row-check" value="' . $row['id'] . '">';
+                $row['name'] = $char . $row['name'];
+                if ($row['parent_id'] == null) {
+                    $row['is_trial'] = '';
+                    $row['views'] = '';
+                    $row['duration'] = '';
+                    $row['created_at'] = '';
+                } else {
+                    $row['is_trial'] = ($row['is_trial'] ?? 0) == 1 ? '<span class="badge badge-success">Có</span>' : '<span class="badge badge-secondary">Không</span>';
+                    $row['views'] = $row['views'] ?? 0;
+                    if ($row['duration'] ?? 0) {
+                        $minutes = floor($row['duration'] / 60);
+                        $seconds = $row['duration'] % 60;
+                        $row['duration'] = $minutes . ' phút ' . $seconds . ' giây';
+                    } else {
+                        $row['duration'] = '—';
+                    }
+                    $row['created_at'] = $row['created_at']
+                        ? date('Y-m-d H:i:s', strtotime($row['created_at']))
+                        : null;
+                    $row['edit'] = '<a href="' . route('admin.lessons.edit', $row['id']) . '" class="btn btn-warning btn-sm"> <i class="fa fa-edit"></i> Sửa </a>';
+                    $deleteUrl = route('admin.lessons.delete', $row['id']);
+                    $row['delete'] = '<button type="button" class="btn btn-danger delete-action btn-sm" data-url="' . $deleteUrl . '"> <i class="fa fa-trash"></i> Xóa </button>';
+                }
+                unset($row['children']);
+                unset($row['video']);
+                unset($row['document']);
+                unset($row['updated_at']);
+                unset($row['course_id']);
+                $result[] = $row;
+
+                // Kiểm tra children là object hay array
+                $children = null;
+                if (is_object($lesson) && isset($lesson->children)) {
+                    $children = $lesson->children;
+                } elseif (is_array($lesson) && isset($lesson['children'])) {
+                    $children = $lesson['children'];
+                }
+
+                if (!empty($children)) {
+                    $this->getLessonsTable($children, $char . '├─ ', $result);
+                }
+            }
+        }
+        return $result;
     }
 
     /**
@@ -91,7 +131,8 @@ class LessonsController extends Controller
     {
         $pageTitle = 'Thêm bài giảng';
         $position = $this->lessonsRepository->getPosition($courseId);
-        return view('lessons::add', compact('pageTitle', 'courseId','position'));
+        $lessons = $this->lessonsRepository->getAllLessons($courseId)->get();
+        return view('lessons::add', compact('pageTitle', 'courseId', 'position', 'lessons'));
     }
 
     /**
@@ -110,26 +151,28 @@ class LessonsController extends Controller
         $description = $request->description;
         $documentId = null;
         $videoId = null;
-        if($document) {
+        if ($document) {
             $documentInfo = getFileInfo($document);
             $document = $this->documentsRepository->createDocument([
                 'url' => $document,
-                'name' => $documentInfo['fileName'],
+                'name' => $documentInfo['name'],
                 'size' => $documentInfo['size']
             ], $document);
             $documentId = $document ? $document->id : null;
         }
-        if($video ){
+        if ($video) {
             $videoInfo = getVideoInfo($video);
-            $video = $this->videosRepository->createVideo([
-                'url' => $video, 
-                'name' => $videoInfo['fileName'], 
-                'size' => $videoInfo['playtime_seconds']], 
+            $video = $this->videosRepository->createVideo(
+                [
+                    'url' => $video,
+                    'name' => $videoInfo['filename'],
+                    'size' => $videoInfo['duration']
+                ],
                 $video
             );
             $videoId = $video ? $video->id : null;
         }
-        
+
         $this->lessonsRepository->create([
             'name' => $name,
             'slug' => $slug,
@@ -159,14 +202,14 @@ class LessonsController extends Controller
     public function edit($id)
     {
         $lesson = $this->lessonsRepository->find($id);
-        
+
         if (!$lesson) {
             abort(404, 'Bài giảng không tồn tại');
         }
-        
+
         // Load relationships để lấy URL video và document
         $lesson->load(['video', 'document']);
-        
+
         $pageTitle = 'Cập nhật bài giảng';
 
         return view('lessons::edit', compact('lesson', 'pageTitle'));
@@ -178,20 +221,20 @@ class LessonsController extends Controller
     public function update(LessonsRequest $request, $id)
     {
         $lesson = $this->lessonsRepository->find($id);
-        
+
         if (!$lesson) {
             abort(404, 'Bài giảng không tồn tại');
         }
-        
+
         $data = $request->validated();
-        
+
         // Xử lý is_trial
         $data['is_trial'] = $request->input('is_trial', 0) == 1;
-        
+
         // Set giá trị mặc định
         $data['views'] = $data['views'] ?? $lesson->views ?? 0;
         $data['parent_id'] = $data['parent_id'] ?? null;
-        
+
         // Xử lý video URL
         if (!empty($data['video'])) {
             // Nếu đã có video_id, update video hiện tại
@@ -218,7 +261,7 @@ class LessonsController extends Controller
             }
         }
         unset($data['video']);
-        
+
         // Xử lý document URL
         if (!empty($data['document'])) {
             // Nếu đã có document_id, update document hiện tại
@@ -245,7 +288,7 @@ class LessonsController extends Controller
             }
         }
         unset($data['document']);
-        
+
         // Giữ nguyên course_id nếu không được cung cấp
         if (!isset($data['course_id'])) {
             $data['course_id'] = $lesson->course_id;

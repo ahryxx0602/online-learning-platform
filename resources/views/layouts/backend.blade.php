@@ -23,6 +23,7 @@
     <!-- Custom global table styles -->
     <link href="{{ asset('backend/css/admin-custom.css') }}" rel="stylesheet">
     {{-- ALLOW PAGE TO PUSH EXTRA CSS --}}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css">
     @stack('styles')
     @yield('stylesheet')
 </head>
@@ -94,6 +95,8 @@
 <script src="{{asset('backend/vendor/jquery/jquery.min.js')}}"></script>
 <script src="{{asset('backend/vendor/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
 
+<!--cdnjs Select2-->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
 <!-- Core plugin JavaScript-->
 <script src="{{asset('backend/vendor/jquery-easing/jquery.easing.min.js')}}"></script>
 

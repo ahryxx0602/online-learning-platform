@@ -46,9 +46,9 @@
             <div class="col-4">
                 <div class="mb-3">
                     <label for="parent_id">Nhóm bài giảng</label>
-                    <select name="parent_id" class="form-control @error('parent_id') is-invalid @enderror">
-                        <option value="0" {{ old('is_trial', 0) == 0 ? 'selected' : '' }}>Không</option>
-                        <option value="1" {{ old('is_trial') == 1 ? 'selected' : '' }}>Có</option>
+                    <select name="parent_id" class="form-control select2 @error('parent_id') is-invalid @enderror">
+                        <option value="0">Trống</option>
+                        {{ getLessons($lessons, old('parent_id')) }}
                     </select>
                     @error('parent_id')
                     <div class="invalid-feedback">{{ $message }}</div>

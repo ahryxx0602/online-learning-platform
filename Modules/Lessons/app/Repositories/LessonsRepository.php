@@ -12,9 +12,23 @@ class LessonsRepository extends BaseRepository implements LessonsRepositoryInter
         return Lesson::class;
     }
 
-    public function getPosition($courseId){
+    public function getPosition($courseId)
+    {
         $result = $this->model->where('course_id', $courseId)->orderBy('id', 'desc')->count();
-        return $result+1;
+        return $result + 1;
+    }
+
+    public function getLessons($courseId)
+    {
+        return $this->model->with('subLessons')->whereCourseId($courseId)->whereParentId(0)->select([
+            'id',
+            'name',
+            'slug',
+            'parent_id',
+            'view',
+            'duration',
+            'created_at'
+        ])->lastest();
     }
 
     /**
@@ -23,27 +37,54 @@ class LessonsRepository extends BaseRepository implements LessonsRepositoryInter
     public function getAllLessons($courseId = null)
     {
         $query = $this->model
-            ->with(['course'])
-            ->select([
-                'id',
-                'name',
-                'slug',
-                'video_id',
-                'document_id',
-                'parent_id',
-                'is_trial',
-                'views',
-                'position',
-                'duration',
-                'description',
-                'created_at'
-            ]);
+            ->with(['video', 'document', 'children.video', 'children.document'])
+            ->select(['id', 'name', 'slug', 'course_id', 'video_id', 'document_id', 'parent_id', 'is_trial', 'views', 'duration', 'created_at']);
 
         if ($courseId) {
             $query->where('course_id', $courseId);
         }
 
-        return $query->orderBy('position')->latest()->get();
+        return $query->latest();
+    }
+
+    /**
+     * Lấy bài giảng theo phân cấp (parent trước, con sau) - giữ structure
+     */
+    public function getLessonsByHierarchy($courseId)
+    {
+        $lessons = $this->model
+            ->with(['children.children' => function ($query) {
+                $query->orderBy('position')->orderBy('id');
+            }])
+            ->where('course_id', $courseId)
+            ->whereNull('parent_id')
+            ->orderBy('position')
+            ->orderBy('id')
+            ->select(['id', 'name', 'slug', 'course_id', 'video_id', 'document_id', 'parent_id', 'is_trial', 'views', 'duration', 'created_at'])
+            ->get();
+
+        return $lessons;
+    }
+
+    /**
+     * Chuyển đổi cấu trúc phân cấp thành danh sách phẳng với level
+     */
+    private function flattenLessons($lessons, $level = 0, &$result = [])
+    {
+        if (empty($result)) {
+            $result = [];
+        }
+
+        foreach ($lessons as $lesson) {
+            $lesson->level = $level;
+            $result[] = $lesson;
+
+            if ($lesson->children && count($lesson->children) > 0) {
+                $this->flattenLessons($lesson->children, $level + 1, $result);
+            }
+        }
+
+        return $result;
     }
 
     /**
