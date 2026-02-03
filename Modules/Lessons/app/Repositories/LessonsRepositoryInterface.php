@@ -11,7 +11,7 @@ interface LessonsRepositoryInterface extends RepositoryInterface
      * @param int|null $courseId Lọc theo khóa học nếu có
      */
     public function getAllLessons($courseId = null);
-
+    public function getPosition($courseId);
     /**
      * Xóa nhiều bài giảng
      */

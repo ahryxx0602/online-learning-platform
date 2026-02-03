@@ -34,6 +34,11 @@ class LessonsRequest extends FormRequest
             'position'    => 'required|integer|min:0',
             'description' => 'nullable',
         ];
+        if($this->parent_id == 0){
+            $rules['parent_id'] = 'required';
+        }else {
+            $rules['parent_id'] = 'nullable';
+        }
 
         if ($id) {
             $rules['slug'] = 'required|string|max:255|unique:lessons,slug,'.$id;

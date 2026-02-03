@@ -13,7 +13,10 @@
             "aliases": {
 
             }
-        }
+        },
+        "files": [
+            "helpers/helper.php"
+        ]
     },
     "autoload": {
         "psr-4": {

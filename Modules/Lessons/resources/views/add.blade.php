@@ -1,6 +1,11 @@
 @extends('layouts.backend')
 @section('content')
-    <form action="{{ route('admin.lessons.store') }}" method="post">
+@if(session('msg'))
+    <div class="alert alert-success">
+        {{ session('msg') }}
+    </div>
+@endif
+    <form action="{{ route('admin.lessons.store', ['courseId' => $courseId]) }}" method="post">
         @csrf
         <input type="hidden" name="course_id" value="{{ old('course_id', request('courseId')) }}">
         <div class="row">
@@ -42,7 +47,8 @@
                 <div class="mb-3">
                     <label for="parent_id">Nhóm bài giảng</label>
                     <select name="parent_id" class="form-control @error('parent_id') is-invalid @enderror">
-                        <option value="">Trống</option>
+                        <option value="0" {{ old('is_trial', 0) == 0 ? 'selected' : '' }}>Không</option>
+                        <option value="1" {{ old('is_trial') == 1 ? 'selected' : '' }}>Có</option>
                     </select>
                     @error('parent_id')
                     <div class="invalid-feedback">{{ $message }}</div>
@@ -71,7 +77,6 @@
                         name="position"
                         type="number"
                         class="form-control @error('position') is-invalid @enderror"
-                        placeholder="Ví dụ: 1"
                         value="{{ old('position', 0) }}"
                         min="0"
                     >

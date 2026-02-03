@@ -36,6 +36,9 @@ return new class extends Migration
             $table->foreign('parent_id')
             ->references('id')->on('lessons')
             ->nullOnDelete();
+            $table->foreign('course_id')
+            ->references('id')->on('courses')
+            ->nullOnDelete();
         });
     }
 

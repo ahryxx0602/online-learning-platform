@@ -12,6 +12,11 @@ class LessonsRepository extends BaseRepository implements LessonsRepositoryInter
         return Lesson::class;
     }
 
+    public function getPosition($courseId){
+        $result = $this->model->where('course_id', $courseId)->orderBy('id', 'desc')->count();
+        return $result+1;
+    }
+
     /**
      * Lấy toàn bộ bài giảng (dùng cho DataTables)
      */
@@ -26,7 +31,6 @@ class LessonsRepository extends BaseRepository implements LessonsRepositoryInter
                 'video_id',
                 'document_id',
                 'parent_id',
-                'course_id',
                 'is_trial',
                 'views',
                 'position',

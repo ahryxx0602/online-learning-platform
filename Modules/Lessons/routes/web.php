@@ -18,14 +18,14 @@ Route::middleware('auth')
     ->prefix('admin/lessons')
     ->name('admin.lessons.')
     ->group(function () {
-        Route::get('/data', [LessonsController::class, 'data'])->name('data');
-        Route::get('/{courseId}', [LessonsController::class, 'index'])
-            ->whereNumber('courseId')
-            ->name('index');
-        Route::get('/create', [LessonsController::class, 'create'])->name('create');
-        Route::post('/create', [LessonsController::class, 'store'])->name('store');
-        Route::get('/edit/{lesson}', [LessonsController::class, 'edit'])->name('edit');
-        Route::put('/edit/{lesson}', [LessonsController::class, 'update'])->name('update');
-        Route::delete('/delete/{lesson}', [LessonsController::class, 'delete'])->name('delete');
+        Route::get('/{courseId}', [LessonsController::class, 'index'])->name('index');
+        Route::get('/{courseId}/create', [LessonsController::class, 'create'])->name('create');
+        Route::get('/{courseId}/data', [LessonsController::class, 'data'])->name('data');
+        Route::post('/{courseId}/create', [LessonsController::class, 'store'])->name('store');
+        Route::get('/edit/{lessonId}', [LessonsController::class, 'edit'])->name('edit');
+        Route::post('/edit/{lessonId}', [LessonsController::class, 'update'])->name('update');
+        Route::delete('/delete/{lessonId}', [LessonsController::class, 'delete'])->name('delete');
+        Route::get('/{courseId}/sort', [LessonsController::class, 'sort'])->name('sort');
+        Route::post('/{courseId}/sort', [LessonsController::class, 'handleSort'])->name('handleSort');
         Route::delete('/delete-multiple', [LessonsController::class, 'deleteMultiple'])->name('deleteMultiple');
     });

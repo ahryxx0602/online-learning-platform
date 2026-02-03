@@ -2,7 +2,7 @@
 
 @section('content')
     <div class="d-flex mb-3">
-        <a href="{{ route('admin.lessons.create', ['courseId' => $courseId ?? '']) }}" class="btn btn-primary mr-2">Thêm mới</a>
+        <a href="{{ route('admin.lessons.create', ['courseId' => $courseId]) }}" class="btn btn-primary mr-2">Thêm mới</a>
         <button
             type="button"
             class="btn btn-danger"
@@ -63,9 +63,7 @@
     <script>
         $(document).ready(function () {
             const courseId = "{{ $courseId ?? 'null' }}";
-            const ajaxUrl = courseId 
-                ? "{{ route('admin.lessons.data') }}?course_id=" + courseId
-                : "{{ route('admin.lessons.data') }}";
+            const ajaxUrl = "{{ route('admin.lessons.data', ['courseId' => $courseId]) }}";
 
             const table = $('#dataTable').DataTable({
                 processing: true,

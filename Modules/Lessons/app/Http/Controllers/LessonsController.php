@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Validator;
 use Modules\Documents\Repositories\DocumentsRepositoryInterface;
 use Modules\Videos\Repositories\VideosRepositoryInterface;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\File;
 
 class LessonsController extends Controller
 {
@@ -53,7 +54,7 @@ class LessonsController extends Controller
      */
     public function data(Request $request)
     {
-        $courseId = $request->get('course_id');
+        $courseId = $request->get('course_id'); 
         
         $lessons = $this->lessonsRepository->getAllLessons($courseId);
         
@@ -62,6 +63,7 @@ class LessonsController extends Controller
                 return '<input type="checkbox" class="row-check" value="' . $lesson->id . '">';
             })
             ->addColumn('edit', function ($lesson) {
+                // Route 'admin.lessons.edit' chỉ cần {lessonId}, không cần courseId
                 return '<a href="' . route("admin.lessons.edit", $lesson->id) . '" class="btn btn-warning btn-sm">
                     <i class="fa fa-edit"></i> Sửa
                 </a>';
@@ -71,6 +73,9 @@ class LessonsController extends Controller
                 return '<button type="button" class="btn btn-danger delete-action btn-sm" data-url="' . $deleteUrl . '">
                     <i class="fa fa-trash"></i> Xóa
                 </button>';
+            })
+            ->editColumn('is_trial', function ($lesson) {
+                return $lesson->is_trial; // Để JS tự render badge như bạn đã viết
             })
             ->editColumn('created_at', function ($lesson) {
                 return $lesson->created_at?->format('Y-m-d H:i:s');
@@ -82,38 +87,62 @@ class LessonsController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create(Request $request)
+    public function create(Request $request, $courseId)
     {
-        $courseId = $request->get('courseId');
         $pageTitle = 'Thêm bài giảng';
-        return view('lessons::add', compact('pageTitle', 'courseId'));
+        $position = $this->lessonsRepository->getPosition($courseId);
+        return view('lessons::add', compact('pageTitle', 'courseId','position'));
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(LessonsRequest $request)
+    public function store(LessonsRequest $request, $courseId)
     {
         //Video
-        $video = $request->video;
-        $videoInfo = getVideoInfo($video);
-        $result = $this->videosRepository->createVideo([
-            'url' => $video, 
-            'name' => $videoInfo['fileName'], 
-            'size' => $videoInfo['playtime_seconds']], 
-            $video
-        );
-
-        //Document
+        $name = $request->name;
+        $slug = $request->slug;
         $document = $request->document;
-        $documentInfo = getFileInfo($document);
-        $result = $this->documentsRepository->createDocument([
-            'url' => $document,
-            'name' => $documentInfo['fileName'],
-            'size' => $documentInfo['size']
-        ], $document);
-        dd($result);
-
+        $video = $request->video;
+        $parent_id = $request->parent_id == 0 ? null : $request->parent_id;
+        $is_trial = $request->is_trial;
+        $position = $request->position;
+        $description = $request->description;
+        $documentId = null;
+        $videoId = null;
+        if($document) {
+            $documentInfo = getFileInfo($document);
+            $document = $this->documentsRepository->createDocument([
+                'url' => $document,
+                'name' => $documentInfo['fileName'],
+                'size' => $documentInfo['size']
+            ], $document);
+            $documentId = $document ? $document->id : null;
+        }
+        if($video ){
+            $videoInfo = getVideoInfo($video);
+            $video = $this->videosRepository->createVideo([
+                'url' => $video, 
+                'name' => $videoInfo['fileName'], 
+                'size' => $videoInfo['playtime_seconds']], 
+                $video
+            );
+            $videoId = $video ? $video->id : null;
+        }
+        
+        $this->lessonsRepository->create([
+            'name' => $name,
+            'slug' => $slug,
+            'document_id' => $documentId,
+            'video_id' => $videoId,
+            'course_id' => $courseId,
+            'parent_id' => $parent_id,
+            'is_trial' => $is_trial,
+            'position' => $position,
+            'description' => $description,
+            'duration' => $videoInfo['playtime_seconds'] ?? 0,
+        ]);
+        return redirect()->route('admin.lessons.create', ['courseId' => $courseId])->with('msg', __('lessons::message.create.success'));
     }
 
     /**
