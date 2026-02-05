@@ -32,7 +32,7 @@
                             <th>Học thử</th>
                             <th>Lượt xem</th>
                             <th>Thời lượng</th>
-                            <th>Ngày tạo</th>
+                            <th>Thêm</th>
                             <th>Sửa</th>
                             <th>Xóa</th>
                         </tr>
@@ -89,7 +89,7 @@
                         searchable: false
                     },
                     {
-                        data: "created_at",
+                        data: "add",
                         orderable: false,
                         searchable: false
                     },

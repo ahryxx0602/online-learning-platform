@@ -48,7 +48,7 @@
                     <label for="parent_id">Nhóm bài giảng</label>
                     <select name="parent_id" class="form-control select2 @error('parent_id') is-invalid @enderror">
                         <option value="0">Trống</option>
-                        {{ getLessons($lessons, old('parent_id')) }}
+                        {{ getLessons($lessons, old('parent_id', request()->module)) }}
                     </select>
                     @error('parent_id')
                     <div class="invalid-feedback">{{ $message }}</div>
@@ -159,8 +159,7 @@
 
             <div class="col-12">
                 <button type="submit" class="btn btn-primary">Lưu lại</button>
-                <a href="{{ route('admin.courses.index') }}" class="btn btn-secondary">Hủy</a>
-            </div>
+                <a href="{{ route('admin.lessons.index', ['courseId' => $courseId]) }}" class="btn btn-secondary">Hủy</a>            </div>
         </div>
     </form>
 @endsection

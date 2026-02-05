@@ -83,7 +83,8 @@ class LessonsController extends Controller
                     $row['is_trial'] = '';
                     $row['views'] = '';
                     $row['duration'] = '';
-                    $row['created_at'] = '';
+                    $addUrl = route('admin.lessons.create', ['courseId' => $row['course_id']]) . '?module=' . $row['id'];
+                    $row['add'] = '<a href="' . $addUrl . '" class="btn btn-info btn-sm"> <i class="fa fa-plus"></i> Thêm bài </a>';
                 } else {
                     $row['is_trial'] = ($row['is_trial'] ?? 0) == 1 ? '<span class="badge badge-success">Có</span>' : '<span class="badge badge-secondary">Không</span>';
                     $row['views'] = $row['views'] ?? 0;
@@ -94,9 +95,6 @@ class LessonsController extends Controller
                     } else {
                         $row['duration'] = '—';
                     }
-                    $row['created_at'] = $row['created_at']
-                        ? date('Y-m-d H:i:s', strtotime($row['created_at']))
-                        : null;
                     $row['edit'] = '<a href="' . route('admin.lessons.edit', $row['id']) . '" class="btn btn-warning btn-sm"> <i class="fa fa-edit"></i> Sửa </a>';
                     $deleteUrl = route('admin.lessons.delete', $row['id']);
                     $row['delete'] = '<button type="button" class="btn btn-danger delete-action btn-sm" data-url="' . $deleteUrl . '"> <i class="fa fa-trash"></i> Xóa </button>';
@@ -105,6 +103,8 @@ class LessonsController extends Controller
                 unset($row['video']);
                 unset($row['document']);
                 unset($row['updated_at']);
+                unset($row['course_id']);
+                unset($row['created_at']);
                 unset($row['course_id']);
                 $result[] = $row;
 

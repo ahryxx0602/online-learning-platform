@@ -27,7 +27,7 @@ class LessonsRepository extends BaseRepository implements LessonsRepositoryInter
             'parent_id',
             'view',
             'duration',
-            'created_at'
+            'course_id'
         ])->lastest();
     }
 
