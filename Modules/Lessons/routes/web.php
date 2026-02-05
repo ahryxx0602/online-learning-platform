@@ -23,7 +23,7 @@ Route::middleware('auth')
         Route::get('/{courseId}/data', [LessonsController::class, 'data'])->name('data');
         Route::post('/{courseId}/create', [LessonsController::class, 'store'])->name('store');
         Route::get('/edit/{lessonId}', [LessonsController::class, 'edit'])->name('edit');
-        Route::post('/edit/{lessonId}', [LessonsController::class, 'update'])->name('update');
+        Route::put('/edit/{lessonId}', [LessonsController::class, 'update'])->name('update');
         Route::delete('/delete/{lessonId}', [LessonsController::class, 'delete'])->name('delete');
         Route::get('/{courseId}/sort', [LessonsController::class, 'sort'])->name('sort');
         Route::post('/{courseId}/sort', [LessonsController::class, 'handleSort'])->name('handleSort');

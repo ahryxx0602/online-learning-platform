@@ -21,7 +21,7 @@ class LessonsRequest extends FormRequest
 
     public function rules()
     {
-        $id = $this->route('lesson');
+        $lessonId = $this->route('lessonId');
 
         $rules = [
             'name'        => 'required|string|max:255',
@@ -40,8 +40,8 @@ class LessonsRequest extends FormRequest
             $rules['parent_id'] = 'nullable';
         }
 
-        if ($id) {
-            $rules['slug'] = 'required|string|max:255|unique:lessons,slug,'.$id;
+        if ($lessonId) {
+            $rules['slug'] = 'required|string|max:255|unique:lessons,slug,'.$lessonId;
             // Khi update, course_id không bắt buộc (giữ nguyên course hiện tại)
             $rules['course_id'] = 'nullable|integer|exists:courses,id';
         }

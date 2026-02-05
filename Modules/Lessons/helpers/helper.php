@@ -2,7 +2,7 @@
 
 function getLessons($lessons, $old, $parentId = 0, $char='')
 {
-    $id = request()->route()->lesson;
+    $id = request()->route()->lessonId;
     if($lessons ){
         foreach($lessons as $key => $lesson){
             if($lesson->parent_id == $parentId && $id != $lesson->id){

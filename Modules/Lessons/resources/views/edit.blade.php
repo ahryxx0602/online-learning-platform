@@ -48,8 +48,9 @@
             <div class="col-4">
                 <div class="mb-3">
                     <label for="parent_id">Nhóm bài giảng</label>
-                    <select name="parent_id" class="form-control @error('parent_id') is-invalid @enderror">
-                        <option value="">Trống</option>
+                    <select name="parent_id" class="form-control select2 @error('parent_id') is-invalid @enderror">
+                        <option value="0">Trống</option>
+                        {{ getLessons($lessons, old('parent_id', $lesson->parent_id)) }}
                     </select>
                     @error('parent_id')
                     <div class="invalid-feedback">{{ $message }}</div>
@@ -92,13 +93,13 @@
                 <div class="mb-3">
                     <label for="video-url">Video</label>
                     <div class="input-group">
-                        <input 
+                    <input 
                             type="text" 
                             name="video" 
                             id="video-url" 
                             class="form-control @error('video') is-invalid @enderror" 
                             placeholder="Video bài giảng"
-                            value="{{ old('video', $lesson->video->url ?? '') }}"
+                            value="{{ old('video', $lesson->video?->url ?? '') }}"
                         />
                         <button 
                             type="button" 
@@ -125,7 +126,7 @@
                             id="document-url" 
                             class="form-control @error('document') is-invalid @enderror" 
                             placeholder="Tài liệu bài giảng"
-                            value="{{ old('document', $lesson->document->url ?? '') }}"
+                            value="{{ old('document', $lesson->document?->url ?? '') }}"
                         />
                         <button 
                             type="button" 

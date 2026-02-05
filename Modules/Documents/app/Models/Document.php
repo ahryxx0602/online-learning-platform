@@ -4,6 +4,7 @@ namespace Modules\Documents\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Modules\Courses\Models\Course;
 
 class Document extends Model
 {
@@ -22,5 +23,12 @@ class Document extends Model
     protected $attributes = [
         'size' => 0,
     ];
+    public function courses() {
+        return Document::hasMany(
+            Course::class,
+            'document_id',
+            'id'
+        );
+    }
 }
 
