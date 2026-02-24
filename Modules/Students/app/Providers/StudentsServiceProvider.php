@@ -4,6 +4,8 @@ namespace Modules\Students\Providers;
 
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
+use Modules\Students\Repositories\StudentsRepository;
+use Modules\Students\Repositories\StudentsRepositoryInterface;
 use Nwidart\Modules\Traits\PathNamespace;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
@@ -36,6 +38,10 @@ class StudentsServiceProvider extends ServiceProvider
     {
         $this->app->register(EventServiceProvider::class);
         $this->app->register(RouteServiceProvider::class);
+        $this->app->bind(
+            StudentsRepositoryInterface::class,
+            StudentsRepository::class
+        );
     }
 
     /**

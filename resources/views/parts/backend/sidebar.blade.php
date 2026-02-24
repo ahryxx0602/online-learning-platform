@@ -36,7 +36,7 @@
                 <h6 class="collapse-header">Nội dung khóa học:</h6>
                 <a class="collapse-item {{ request()->routeIs('admin.categories.*') ? 'active' : '' }}" href="{{ route('admin.categories.index') }}">Danh mục</a>
                 <a class="collapse-item {{ request()->routeIs('admin.courses.*') ? 'active' : '' }}" href="{{ route('admin.courses.index') }}">Khóa học</a>
-                <a class="collapse-item" href="#">Bài giảng</a>
+                <a class="collapse-item {{ request()->routeIs('admin.students.*') ? 'active' : '' }}" href="{{ route('admin.students.index') }}">Sinh viên</a>
                 <div class="collapse-divider"></div>
                 <h6 class="collapse-header">Tài nguyên:</h6>
                 <a class="collapse-item {{ request()->routeIs('admin.teachers.*') ? 'active' : '' }}" href="{{ route('admin.teachers.index') }}">Giảng viên</a>

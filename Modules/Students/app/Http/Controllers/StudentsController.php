@@ -4,15 +4,51 @@ namespace Modules\Students\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Modules\Students\Repositories\StudentsRepository;
+use Modules\Students\Repositories\StudentsRepositoryInterface;
+use Yajra\DataTables\Facades\DataTables;
 
 class StudentsController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
+
+
+    protected $studentsRepository;
+
+    public function __construct(StudentsRepositoryInterface $studentsRepository)
+    {
+        $this->studentsRepository = $studentsRepository;
+    }
+
+
     public function index()
     {
-        return view('students::index');
+        $pageTitle = 'Danh sách học sinh';
+        return view('students::list', compact('pageTitle'));
+    }
+
+    public function data()
+    {
+        $students = $this->studentsRepository->getAllStudents();
+        return DataTables::of($students)
+            ->addColumn('select', function ($student) {
+                return '<input type="checkbox" class="row-check" value="'.$student->id.'">';
+            })
+            ->addColumn('edit', function ($student) {
+                return '<a href="'.route("admin.students.edit", $student->id).'" class="btn btn-warning btn-sm">
+                            <i class="fa fa-edit"></i> Sửa
+                        </a>';
+            })
+            ->addColumn('delete', function ($student) {
+                $deleteUrl = route("admin.students.delete", $student->id);
+                return '<button type="button" class="btn btn-danger delete-action btn-sm" data-url="'.$deleteUrl.'">
+                            <i class="fa fa-trash"></i> Xóa
+                        </button>';
+            })
+            ->rawColumns(['select', 'edit', 'delete'])
+            ->make(true);
     }
 
     /**
