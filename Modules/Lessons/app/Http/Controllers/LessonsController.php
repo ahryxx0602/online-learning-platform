@@ -57,8 +57,10 @@ class LessonsController extends Controller
         // Lấy lessons theo phân cấp (parent trước, rồi đến con)
         $parentLessons = $this->lessonsRepository->getLessonsByHierarchy($courseId);
 
+        $parentLessons->load('subLessons');
+
         // Chuyển thành danh sách phẳng với indentation
-        $flatLessons = $this->getLessonsTable($parentLessons->toArray());
+        $flatLessons = $this->getLessonsTable($parentLessons);
 
         // Trả về dữ liệu dạng DataTable
         return response()->json([
@@ -72,22 +74,30 @@ class LessonsController extends Controller
     /**
      * Chuyển đổi danh sách bài giảng thành cấu trúc phân cấp
      */
-    public function getLessonsTable($lessons, $char = '', &$result = [])
-    {
+    public function getLessonsTable($lessons, $char = '', &$result = []) {
         if (!empty($lessons)) {
-            foreach ($lessons as $key => $lesson) {
-                $row = (array) $lesson;
+            foreach ($lessons as $lesson) {
+                // Chuyển object thành array để xử lý cho DataTable
+                $row = is_object($lesson) ? $lesson->toArray() : $lesson;
+                
+                // Lưu lại danh sách con trước khi unset để đệ quy
+                // Laravel toArray() sẽ chuyển subLessons thành sub_lessons
+                $children = $row['sub_lessons'] ?? ($row['children'] ?? []);
+    
                 $row['select'] = '<input type="checkbox" class="row-check" value="' . $row['id'] . '">';
                 $row['name'] = $char . $row['name'];
+    
                 if ($row['parent_id'] == null) {
                     $row['is_trial'] = '';
                     $row['views'] = '';
                     $row['duration'] = '';
                     $addUrl = route('admin.lessons.create', ['courseId' => $row['course_id']]) . '?module=' . $row['id'];
                     $row['add'] = '<a href="' . $addUrl . '" class="btn btn-info btn-sm"> <i class="fa fa-plus"></i> Thêm bài </a>';
+                    $row['edit'] = '<a href="' . route('admin.lessons.edit', $row['id']) . '" class="btn btn-warning btn-sm"> <i class="fa fa-edit"></i> Sửa </a>';
                 } else {
                     $row['is_trial'] = ($row['is_trial'] ?? 0) == 1 ? '<span class="badge badge-success">Có</span>' : '<span class="badge badge-secondary">Không</span>';
                     $row['views'] = $row['views'] ?? 0;
+                    
                     if ($row['duration'] ?? 0) {
                         $minutes = floor($row['duration'] / 60);
                         $seconds = $row['duration'] % 60;
@@ -95,35 +105,27 @@ class LessonsController extends Controller
                     } else {
                         $row['duration'] = '—';
                     }
+                    
+                    $row['add'] = ''; // Bài con không có nút "Thêm bài"
                     $row['edit'] = '<a href="' . route('admin.lessons.edit', $row['id']) . '" class="btn btn-warning btn-sm"> <i class="fa fa-edit"></i> Sửa </a>';
                     $deleteUrl = route('admin.lessons.delete', $row['id']);
                     $row['delete'] = '<button type="button" class="btn btn-danger delete-action btn-sm" data-url="' . $deleteUrl . '"> <i class="fa fa-trash"></i> Xóa </button>';
                 }
-                unset($row['children']);
-                unset($row['video']);
-                unset($row['document']);
-                unset($row['updated_at']);
-                unset($row['course_id']);
-                unset($row['created_at']);
-                unset($row['course_id']);
+    
+                // Xóa dữ liệu thừa để nhẹ JSON trả về
+                unset($row['sub_lessons'], $row['children'], $row['video'], $row['document'], $row['updated_at'], $row['created_at']);
+                
                 $result[] = $row;
-
-                // Kiểm tra children là object hay array
-                $children = null;
-                if (is_object($lesson) && isset($lesson->children)) {
-                    $children = $lesson->children;
-                } elseif (is_array($lesson) && isset($lesson['children'])) {
-                    $children = $lesson['children'];
-                }
-
+    
+                // Đệ quy nếu có bài học con
                 if (!empty($children)) {
-                    $this->getLessonsTable($children, $char . '├─ ', $result);
+                    // Sử dụng ký tự phân cấp rõ ràng hơn
+                    $this->getLessonsTable($children, $char . '│&nbsp;&nbsp;&nbsp;├─ ', $result);
                 }
             }
         }
         return $result;
     }
-
     /**
      * Show the form for creating a new resource.
      */
@@ -293,5 +295,21 @@ class LessonsController extends Controller
             'message' => __('lessons::message.delete.success'),
             'deleted' => $deleted,
         ]);
+    }
+    public function sort(Request $request, $courseId){
+        $pageTitle = 'Sắp xếp bài giảng';
+        $modules = $this->lessonsRepository->getLessons($courseId)->with('children')->get();
+        return view('lessons::sort', compact('pageTitle', 'courseId', 'modules'));
+    }
+    public function handleSort(Request $request, $courseId){
+        $lessons = $request->lesson;
+        if($lessons) {
+            foreach($lessons as $index => $lessonId) {
+                $this->lessonsRepository->update($lessonId, [
+                    'position' => $index
+                ]);
+            }
+        }
+        return redirect()->route('admin.lessons.sort', $courseId)->with('msg', __('lessons::message.update.success'));
     }
 }

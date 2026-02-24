@@ -20,15 +20,9 @@ class LessonsRepository extends BaseRepository implements LessonsRepositoryInter
 
     public function getLessons($courseId)
     {
-        return $this->model->with('subLessons')->whereCourseId($courseId)->whereParentId(0)->select([
-            'id',
-            'name',
-            'slug',
-            'parent_id',
-            'view',
-            'duration',
-            'course_id'
-        ])->latest();
+        return $this->model->with('subLessons')->whereCourseId($courseId)->whereNull('parent_id')
+        ->select(['id', 'name', 'slug', 'is_trial', 'parent_id', 'views', 'duration', 'course_id'])
+        ->orderBy('position', 'asc');
     }
 
     /**
@@ -50,20 +44,13 @@ class LessonsRepository extends BaseRepository implements LessonsRepositoryInter
     /**
      * Lấy bài giảng theo phân cấp (parent trước, con sau) - giữ structure
      */
-    public function getLessonsByHierarchy($courseId)
-    {
-        $lessons = $this->model
-            ->with(['children.children' => function ($query) {
-                $query->orderBy('position')->orderBy('id');
-            }])
+    public function getLessonsByHierarchy($courseId) {
+        return $this->model
             ->where('course_id', $courseId)
-            ->whereNull('parent_id')
-            ->orderBy('position')
-            ->orderBy('id')
-            ->select(['id', 'name', 'slug', 'course_id', 'video_id', 'document_id', 'parent_id', 'is_trial', 'views', 'duration', 'created_at'])
+            ->whereNull('parent_id') // Chỉ lấy cấp cao nhất ở ngoài cùng
+            ->with('subLessons')      // Load sẵn các cấp con
+            ->orderBy('position', 'asc')
             ->get();
-
-        return $lessons;
     }
 
     /**

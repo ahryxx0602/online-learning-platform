@@ -18,4 +18,5 @@ interface LessonsRepositoryInterface extends RepositoryInterface
     public function deleteMultiple(array $ids): int;
 
     public function getLessonsByHierarchy($courseId);
+    public function getLessons($courseId);
 }

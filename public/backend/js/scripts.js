@@ -164,9 +164,16 @@ function convertToSlug(text) {
 
 
 // Auto generate slug when typing name
-document.getElementById("name").addEventListener("keyup", function () {
-    document.getElementById("slug").value = convertToSlug(this.value);
-});
+// Tìm các phần tử
+const nameInput = document.getElementById("name");
+const slugInput = document.getElementById("slug");
+
+// Chỉ gán sự kiện nếu CẢ HAI tồn tại trên trang
+if (nameInput && slugInput) {
+    nameInput.addEventListener("keyup", function () {
+        slugInput.value = convertToSlug(this.value);
+    });
+}
 $(document).ready(function() {
     // Kiểm tra xem element có tồn tại không trước khi chạy để tránh lỗi
     if ($('.js-example-basic-single').length > 0) {

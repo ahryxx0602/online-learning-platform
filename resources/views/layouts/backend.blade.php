@@ -93,6 +93,8 @@
 
 <!-- Bootstrap core JavaScript-->
 <script src="{{asset('backend/vendor/jquery/jquery.min.js')}}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.6/Sortable.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery-sortablejs@latest/jquery-sortable.js"></script>
 <script src="{{asset('backend/vendor/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
 
 <!--cdnjs Select2-->

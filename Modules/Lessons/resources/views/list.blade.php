@@ -3,6 +3,7 @@
 @section('content')
     <div class="d-flex mb-3">
         <a href="{{ route('admin.lessons.create', ['courseId' => $courseId]) }}" class="btn btn-primary mr-2">Thêm mới</a>
+        <a href="{{ route('admin.lessons.sort', ['courseId' => $courseId]) }}" class="btn btn-success mr-2">Sắp xếp bài giảng</a>
         <button type="button" class="btn btn-danger" id="bulk-delete-btn"
             data-url="{{ route('admin.lessons.deleteMultiple') }}" disabled>
             Xóa đã chọn
