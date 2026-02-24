@@ -17,3 +17,13 @@ function getLessons($lessons, $old, $parentId = 0, $char='')
         }
     }
 }
+
+function getTime($seconds) {
+    $mins = floor($seconds / 60);
+    $secs = floor($seconds % 60); // Dùng phép chia lấy dư % sẽ chuẩn hơn
+    
+    $mins = $mins < 10 ? '0' . $mins : $mins;
+    $secs = $secs < 10 ? '0' . $secs : $secs;
+    
+    return "$mins:$secs";
+}

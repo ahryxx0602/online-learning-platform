@@ -97,14 +97,7 @@ class LessonsController extends Controller
                 } else {
                     $row['is_trial'] = ($row['is_trial'] ?? 0) == 1 ? '<span class="badge badge-success">Có</span>' : '<span class="badge badge-secondary">Không</span>';
                     $row['views'] = $row['views'] ?? 0;
-                    
-                    if ($row['duration'] ?? 0) {
-                        $minutes = floor($row['duration'] / 60);
-                        $seconds = $row['duration'] % 60;
-                        $row['duration'] = $minutes . ' phút ' . $seconds . ' giây';
-                    } else {
-                        $row['duration'] = '—';
-                    }
+                    $row['duration'] = getTime($row['duration']);
                     
                     $row['add'] = ''; // Bài con không có nút "Thêm bài"
                     $row['edit'] = '<a href="' . route('admin.lessons.edit', $row['id']) . '" class="btn btn-warning btn-sm"> <i class="fa fa-edit"></i> Sửa </a>';
@@ -185,7 +178,7 @@ class LessonsController extends Controller
             'is_trial' => $is_trial,
             'position' => $position,
             'description' => $description,
-            'duration' => $videoInfo['playtime_seconds'] ?? 0,
+            'duration' => $videoInfo['duration'] ?? 0,
         ]);
         return redirect()->route('admin.lessons.create', ['courseId' => $courseId])->with('msg', __('lessons::message.create.success'));
     }
