@@ -90,15 +90,37 @@ class StudentsController extends Controller
      */
     public function edit($id)
     {
-        return view('students::edit');
+        
+        $student = $this->studentsRepository->find($id);
+        if(!$student){
+            abort(404);
+        }
+
+        $pageTitle = "Cập nhật người dùng";
+        return view('students::edit', compact('pageTitle', 'student'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, $id)
+    public function update(StudentRequest $request, $id)
     {
-        //
+        $data = $request->except('_token', '_method', 'password');
+        
+        if ($request->filled('password')) {
+            $data['password'] = bcrypt($request->password);
+        }
+
+        $data['status'] = $request->status ?? 0;
+
+        $status = $this->studentsRepository->update($id, $data);
+
+        if ($status) {
+            return redirect()->route('admin.students.index')
+                ->with('msg', __('user::message.update.success'));
+        }
+        
+        return back()->with('error', 'Cập nhật thất bại, vui lòng thử lại!');
     }
 
     /**

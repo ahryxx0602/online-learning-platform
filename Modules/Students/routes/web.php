@@ -22,8 +22,8 @@ Route::middleware('auth')
         Route::get('/data', [StudentsController::class, 'data'])->name('data');
         Route::get('/create', [StudentsController::class, 'create'])->name('create');
         Route::post('/create', [StudentsController::class, 'store'])->name('store');
-        Route::get('/edit/{user}', [StudentsController::class, 'edit'])->name('edit');
-        Route::put('/edit/{user}', [StudentsController::class, 'update'])->name('update');
-        Route::delete('/delete/{user}', [StudentsController::class, 'delete'])->name('delete');
+        Route::get('/edit/{student}', [StudentsController::class, 'edit'])->name('edit');
+        Route::put('/edit/{student}', [StudentsController::class, 'update'])->name('update');
+        Route::delete('/delete/{student}', [StudentsController::class, 'delete'])->name('delete');
         Route::delete('/delete-multiple', [StudentsController::class, 'deleteMultiple'])->name('deleteMultiple');
     });

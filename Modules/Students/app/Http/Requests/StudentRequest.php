@@ -20,21 +20,23 @@ class StudentRequest extends FormRequest
 
     public function rules(): array
     {
-        $id = $this->route('student'); 
-
+        
+        $id = $this->route()->student;
+        // 1. Khai báo rules mặc định (Áp dụng cho Thêm mới)
         $rules = [
             'name'     => 'required|max:100',
-            'email'    => 'required|email|max:100|unique:students,email', // Đổi sang bảng students
+            'email'    => 'required|email|max:100|unique:students,email',
             'password' => 'required|min:6|max:100',
             'phone'    => 'nullable|max:20',
             'address'  => 'nullable|max:255',
             'status'   => 'nullable|boolean',
         ];
 
+        // 2. Nếu có $id (Cập nhật), tiến hành ghi đè hoặc loại bỏ rule
         if ($id) {
             $rules['email'] = 'required|email|max:100|unique:students,email,' . $id;
 
-            if ($this->filled('password')) {
+            if ($this->filled('password')) { 
                 $rules['password'] = 'min:6|max:100';
             } else {
                 unset($rules['password']);
