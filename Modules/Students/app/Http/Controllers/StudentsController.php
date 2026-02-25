@@ -74,7 +74,7 @@ class StudentsController extends Controller
 
         $this->studentsRepository->create($data);
 
-        return redirect()->route('admin.students.index')->with('msg', __('user::message.create.success'));
+        return redirect()->route('admin.students.index')->with('msg', __('students::message.create.success'));
     }
 
     /**
@@ -117,7 +117,7 @@ class StudentsController extends Controller
 
         if ($status) {
             return redirect()->route('admin.students.index')
-                ->with('msg', __('user::message.update.success'));
+                ->with('msg', __('students::message.update.success'));
         }
         
         return back()->with('error', 'Cập nhật thất bại, vui lòng thử lại!');
@@ -126,8 +126,27 @@ class StudentsController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy($id)
+    public function delete($id)
     {
-        //
+        $this->studentsRepository->delete($id);
+        return back()->with('msg', __('students::message.delete.success'));
+    }
+
+    public function deleteMultiple(Request $request)
+    {
+        $ids = $request->input('ids', []);
+
+        if (!is_array($ids) || empty($ids)) {
+            return response()->json([
+                'message' => 'Vui lòng chọn ít nhất 1 học viên',
+            ], 422);
+        }
+
+        $deleted = $this->studentsRepository->deleteMultiple($ids);
+
+        return response()->json([
+            'message' => __('students::message.delete.success'),
+            'deleted' => $deleted,
+        ]);
     }
 }

@@ -49,29 +49,29 @@ class StudentRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'name.required'     => __('user::validation.required'),
-            'name.max'          => __('user::validation.max'),
-            'email.required'    => __('user::validation.required'),
-            'email.email'       => __('user::validation.email'),
-            'email.unique'      => __('user::validation.unique'),
-            'email.max'         => __('user::validation.max'),
-            'password.required' => __('user::validation.required'),
-            'password.min'      => __('user::validation.min'),
-            'password.max'      => __('user::validation.max'),
-            'phone.max'         => __('user::validation.max'),
-            'address.max'       => __('user::validation.max'),
+            'name.required'     => __('students::validation.required'),
+            'name.max'          => __('students::validation.max'),
+            'email.required'    => __('students::validation.required'),
+            'email.email'       => __('students::validation.email'),
+            'email.unique'      => __('students::validation.unique'),
+            'email.max'         => __('students::validation.max'),
+            'password.required' => __('students::validation.required'),
+            'password.min'      => __('students::validation.min'),
+            'password.max'      => __('students::validation.max'),
+            'phone.max'         => __('students::validation.max'),
+            'address.max'       => __('students::validation.max'),
         ];
     }
 
     public function attributes(): array
     {
         return [
-            'name'     => __('user::validation.attributes.name'),
-            'email'    => __('user::validation.attributes.email'),
-            'password' => __('user::validation.attributes.password'),
-            'phone'    => __('user::validation.attributes.phone'),
-            'address'  => __('user::validation.attributes.address'),
-            'status'   => __('user::validation.attributes.status'),
+            'name'     => __('students::validation.attributes.name'),
+            'email'    => __('students::validation.attributes.email'),
+            'password' => __('students::validation.attributes.password'),
+            'phone'    => __('students::validation.attributes.phone'),
+            'address'  => __('students::validation.attributes.address'),
+            'status'   => __('students::validation.attributes.status'),
         ];
     }
 }
