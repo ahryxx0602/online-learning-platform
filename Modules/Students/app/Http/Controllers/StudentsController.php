@@ -4,6 +4,7 @@ namespace Modules\Students\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Modules\Students\App\Http\Requests\StudentRequest;
 use Modules\Students\Repositories\StudentsRepository;
 use Modules\Students\Repositories\StudentsRepositoryInterface;
 use Yajra\DataTables\Facades\DataTables;
@@ -25,7 +26,7 @@ class StudentsController extends Controller
 
     public function index()
     {
-        $pageTitle = 'Danh sách học sinh';
+        $pageTitle = 'Danh sách học viên';
         return view('students::list', compact('pageTitle'));
     }
 
@@ -56,15 +57,24 @@ class StudentsController extends Controller
      */
     public function create()
     {
-        return view('students::create');
+        $pageTitle = 'Tạo mới học viên';
+        return view('students::add', compact('pageTitle'));
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StudentRequest $request)
     {
-        //
+        $data = $request->validated();
+        
+        $data['password'] = bcrypt($data['password']);
+
+        $data['status'] = $request->status ?? 0; 
+
+        $this->studentsRepository->create($data);
+
+        return redirect()->route('admin.students.index')->with('msg', __('user::message.create.success'));
     }
 
     /**

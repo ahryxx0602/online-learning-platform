@@ -10,13 +10,16 @@ class Student extends Model
 {
     use HasFactory;
 
-    /**
-     * The attributes that are mass assignable.
-     */
-    protected $fillable = [];
+    protected $fillable = [
+        'name',
+        'email',
+        'phone',
+        'password',
+        'address',
+        'status',
+    ];
 
-    // protected static function newFactory(): StudentFactory
-    // {
-    //     // return StudentFactory::new();
-    // }
+    protected $hidden = [
+        'password',
+    ];
 }
