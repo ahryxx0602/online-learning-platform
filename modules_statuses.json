@@ -10,5 +10,6 @@
     "Lessons": true,
     "Videos": true,
     "Documents": true,
-    "Students": true
+    "Students": true,
+    "Home": true
 }
