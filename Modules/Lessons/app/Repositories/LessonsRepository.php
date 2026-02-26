@@ -28,17 +28,22 @@ class LessonsRepository extends BaseRepository implements LessonsRepositoryInter
     /**
      * Lấy toàn bộ bài giảng (dùng cho DataTables)
      */
-    public function getAllLessons($courseId = null)
+    // public function getAllLessons($courseId = null)
+    // {
+    //     $query = $this->model
+    //         ->with(['video', 'document', 'children.video', 'children.document'])
+    //         ->select(['id', 'name', 'slug', 'course_id', 'video_id', 'document_id', 'parent_id', 'is_trial', 'views', 'duration', 'created_at']);
+
+    //     if ($courseId) {
+    //         $query->where('course_id', $courseId);
+    //     }
+
+    //     return $query->latest();
+    // }
+
+    public function getAllLessons($courseId)
     {
-        $query = $this->model
-            ->with(['video', 'document', 'children.video', 'children.document'])
-            ->select(['id', 'name', 'slug', 'course_id', 'video_id', 'document_id', 'parent_id', 'is_trial', 'views', 'duration', 'created_at']);
-
-        if ($courseId) {
-            $query->where('course_id', $courseId);
-        }
-
-        return $query->latest();
+        return $this->model->where('course_id', $courseId)->get();
     }
 
     /**

@@ -10,7 +10,7 @@ interface LessonsRepositoryInterface extends RepositoryInterface
      * Lấy toàn bộ bài giảng (dùng cho DataTables)
      * @param int|null $courseId Lọc theo khóa học nếu có
      */
-    public function getAllLessons($courseId = null);
+    public function getAllLessons($courseId);
     public function getPosition($courseId);
     /**
      * Xóa nhiều bài giảng
