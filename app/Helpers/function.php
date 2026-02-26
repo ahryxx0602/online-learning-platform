@@ -12,3 +12,8 @@ function deleteImageFile($image)
 function money($number, $currency = 'đ'){
     return !empty($number) ? number_format($number). ' '.$currency: 'Miễn phí';
 }
+
+function getHour($secs){
+    $value = round($secs / 3600, 1);
+    return $value . 'h';
+}

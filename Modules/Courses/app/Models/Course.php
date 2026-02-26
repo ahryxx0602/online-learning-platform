@@ -6,6 +6,7 @@ use App\Models\Scopes\ActiveScope;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Modules\Categories\Models\Category;
+use Modules\Lessons\Models\Lesson;
 use Modules\Teachers\Models\Teacher;
 
 // use Modules\Courses\Database\Factories\CoursesFactory;
@@ -35,7 +36,7 @@ class Course extends Model
         'status',
     ];
 
-    protected $with = ['teacher'];
+    protected $with = ['teacher', 'lessons'];
 
     protected static function booted(): void
     {
@@ -55,5 +56,10 @@ class Course extends Model
             'courses_id',      // tên khoá ngoại ĐANG CÓ trong bảng pivot
             'category_id'
         );
+    }
+
+    public function lessons()
+    {
+        return $this->hasMany(Lesson::class, 'course_id', 'id');    
     }
 }
