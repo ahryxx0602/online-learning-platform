@@ -8,3 +8,4 @@ function deleteImageFile($image)
     File::delete(public_path($image));
     File::delete(public_path($imageThumb));
 }
+

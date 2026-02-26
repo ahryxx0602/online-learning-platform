@@ -2,6 +2,7 @@
 
 namespace Modules\Courses\Repositories;
 
+use App\Models\Scopes\ActiveScope;
 use App\Repositories\BaseRepository;
 use Modules\Courses\Models\Course;
 
@@ -18,7 +19,7 @@ class CoursesRepository extends BaseRepository implements CoursesRepositoryInter
     public function getAllCourses()
     {
         return $this->model
-            ->with(['teacher'])  // thêm để datatables dùng row.teacher.name không lỗi
+            ->withoutGlobalScope(ActiveScope::class)
             ->select([
                 'id',
                 'name',
@@ -28,8 +29,11 @@ class CoursesRepository extends BaseRepository implements CoursesRepositoryInter
                 'status',
                 'created_at'
             ])
-            ->latest()
-            ->get();
+            ->latest();
+    }
+
+    public function getCourse($id){
+        return $this->model->withoutGlobalScope(ActiveScope::class)->find($id);
     }
 
 
@@ -55,5 +59,21 @@ class CoursesRepository extends BaseRepository implements CoursesRepositoryInter
     public function deleteMultiple(array $ids): int
     {
         return $this->model->whereIn('id', $ids)->delete();
+    }
+
+    public function getCourses($limit){
+        return $this->model->limit($limit)->latest()->where('status', 1)->get();
+    }
+
+    public function deleteCourse($id){
+        return $this->model->withoutGlobalScope(ActiveScope::class)->where('id', $id)->delete();
+    }
+
+    public function updateCourse($id, $data = []){
+        $result = $this->getCourse($id);
+        if($result){
+            return $result->update($data );
+        }
+        return false;
     }
 }

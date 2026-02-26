@@ -104,7 +104,7 @@ class CoursesController extends Controller
      */
     public function edit($id)
     {
-        $course = $this->coursesRepository->find($id);
+        $course = $this->coursesRepository->getCourse($id);
 
         $categoryIds = $this->coursesRepository->getRelatedCategories($course);
         $teachers = $this->teachersRepository->getAllTeachers();
@@ -129,9 +129,9 @@ class CoursesController extends Controller
         if (!$data['price']) {
             $data['price'] = 0;
         }
-        $updated = $this->coursesRepository->update($id, $data);
+        $updated = $this->coursesRepository->updateCourse($id, $data);
         $categories = $this->getCategories($data);
-        $course = $this->coursesRepository->find($id);
+        $course = $this->coursesRepository->getCourse($id);
         $this->coursesRepository->updateCourseCategories($course, $categories);
         if ($updated) {
             return back()
@@ -144,9 +144,9 @@ class CoursesController extends Controller
      */
     public function delete($id)
     {
-        $course = $this->coursesRepository->find($id);
+        $course = $this->coursesRepository->getCourse($id);
 
-        $status = $this->coursesRepository->delete($id);
+        $status = $this->coursesRepository->deleteCourse($id);
 
         if ($status && $course && $course->thumbnail) {
             deleteImageFile($course->thumbnail);

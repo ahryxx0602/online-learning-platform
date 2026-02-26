@@ -15,4 +15,13 @@ interface CoursesRepositoryInterface extends RepositoryInterface
     public function updateCourseCategories($course, $data = []);
 
     public function getRelatedCategories($course);
+
+    public function getCourses($limit);
+    
+    public function getCourse($id);
+
+    public function deleteCourse($limit);
+
+    public function updateCourse($id, $data = []);
+    
 }

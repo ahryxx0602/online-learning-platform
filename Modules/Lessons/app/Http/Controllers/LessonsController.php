@@ -39,7 +39,7 @@ class LessonsController extends Controller
      */
     public function index($courseId)
     {
-        $course = $this->coursesRepository->find($courseId);
+        $course = $this->coursesRepository->getCourse($courseId);
 
         if (!$course) {
             abort(404, 'Khóa học không tồn tại');

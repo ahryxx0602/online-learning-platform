@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Modules\Courses\app\Http\Controllers\Clients\CoursesController as ClientsCoursesController;
 use Modules\Courses\Http\Controllers\CoursesController;
 
 Route::middleware('auth')
@@ -20,4 +21,8 @@ Route::middleware('auth')
 // File manager, chỉ cần web (đã có sẵn từ RouteServiceProvider)
 Route::prefix('filemanager')->group(function () {
     \UniSharp\LaravelFilemanager\Lfm::routes();
+});
+
+Route::group(['as' => 'courses.'], function(){
+    Route::get('/khoa-hoc', [ClientsCoursesController::class, 'index'])->name('index');
 });

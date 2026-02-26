@@ -2,6 +2,7 @@
 
 namespace Modules\Courses\Models;
 
+use App\Models\Scopes\ActiveScope;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Modules\Categories\Models\Category;
@@ -33,6 +34,13 @@ class Course extends Model
         'supports',
         'status',
     ];
+
+    protected $with = ['teacher'];
+
+    protected static function booted(): void
+    {
+        static::addGlobalScope(new ActiveScope);
+    }
 
     public function teacher()
     {

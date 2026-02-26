@@ -35,8 +35,8 @@
     </div>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container">
-            <a class="navbar-brand" href="#">
-                <img src="../assets/logo.png" alt="" />
+            <a class="navbar-brand" href="/">
+                <img src="/clients/assets/logo.png" alt="" />
             </a>
             <button
                 class="navbar-toggler d-lg-none"
