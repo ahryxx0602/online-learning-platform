@@ -9,3 +9,6 @@ function deleteImageFile($image)
     File::delete(public_path($imageThumb));
 }
 
+function money($number, $currency = 'đ'){
+    return !empty($number) ? number_format($number). ' '.$currency: 'Miễn phí';
+}
