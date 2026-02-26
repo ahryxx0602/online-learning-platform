@@ -62,7 +62,7 @@ class CoursesRepository extends BaseRepository implements CoursesRepositoryInter
     }
 
     public function getCourses($limit){
-        return $this->model->limit($limit)->latest()->where('status', 1)->get();
+        return $this->model->limit($limit)->latest()->paginate($limit);
     }
 
     public function deleteCourse($id){

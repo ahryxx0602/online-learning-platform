@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use Illuminate\Pagination\Paginator;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -23,5 +24,6 @@ class AppServiceProvider extends ServiceProvider
         app()->setLocale('vi');
         // Set locale mặc định là 'en' để sử dụng translation tiếng Anh
         //app()->setLocale('en');
+        Paginator::useBootstrapFive();
     }
 }

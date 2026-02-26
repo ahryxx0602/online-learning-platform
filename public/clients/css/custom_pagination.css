@@ -1,0 +1,44 @@
+/* Bao bọc phân trang */
+.custom-pagination .pagination {
+    gap: 8px; /* Tạo khoảng cách tách rời giữa các nút */
+}
+
+/* Các nút cơ bản */
+.custom-pagination .page-item .page-link {
+    border-radius: 8px !important; /* Bo góc mềm mại */
+    border: 1px solid #eaedf1;
+    color: #555;
+    padding: 8px 14px;
+    font-weight: 500;
+    font-size: 14px;
+    background-color: #fff;
+    transition: all 0.2s ease-in-out;
+}
+
+/* Hiệu ứng khi hover chuột */
+.custom-pagination .page-item .page-link:hover {
+    background-color: #f4f6f9;
+    color: #007bff; /* Màu xanh đồng bộ với nút Tìm kiếm trên Header */
+    border-color: #d1d5db;
+}
+
+/* Trạng thái đang chọn (Active) */
+.custom-pagination .page-item.active .page-link {
+    background-color: #007bff; /* Màu xanh chủ đạo */
+    border-color: #007bff;
+    color: #fff;
+    box-shadow: 0 4px 6px rgba(0, 123, 255, 0.25); /* Hiệu ứng đổ bóng nhẹ */
+}
+
+/* Trạng thái vô hiệu hóa (Disabled) */
+.custom-pagination .page-item.disabled .page-link {
+    background-color: #f9fafb;
+    color: #cbd5e1;
+    border-color: #f1f5f9;
+    cursor: not-allowed;
+}
+
+/* Text bên trái */
+.custom-pagination .pagination-text small {
+    font-size: 14px;
+}

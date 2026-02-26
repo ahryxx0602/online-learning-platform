@@ -3,8 +3,8 @@
 @include('parts.clients.page_title')
 <section class="all-course">
     <div class="container">
-        <div class="row">
-            @if ($courses)
+        @if ($courses)
+            <div class="row">
                 @foreach ($courses as $course)
                     <div class="col-12 col-lg-6">
                         <div class="d-flex course">
@@ -38,8 +38,11 @@
                         </div>
                     </div> 
                 @endforeach
-            @endif
+            <div class='mt-3'>
+                {{ $courses->links('vendor.pagination.custom') }}
+            <div>
         </div>
+        @endif
     </div>
 </section>
 @endsection

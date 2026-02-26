@@ -14,6 +14,7 @@
     <link rel="stylesheet" href="{{asset('clients/css/home.css')}}" />
     <link rel="stylesheet" href="{{asset('clients/css/course.css')}}" />
     <link rel="stylesheet" href="{{asset('clients/css/footer.css')}}" />
+    <link rel="stylesheet" href="{{asset('clients/css/custom_pagination.css')}}" />
     @yield('stylesheets')
 </head>
 <body>
