@@ -56,7 +56,9 @@
 	background-color: #fff;
 	margin-top: 40px;
 }
-.course-detal .course-descreption h4 {
+.course-detal .course-descreption h4,
+.course-detal .course-descreption h2,
+.course-detal .course-descreption h3 {
 	text-transform: uppercase;
 	color: #f60;
 	margin-bottom: 15px;

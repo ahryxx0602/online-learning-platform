@@ -20,4 +20,8 @@ interface LessonsRepositoryInterface extends RepositoryInterface
     public function getLessonsByHierarchy($courseId);
     public function getLessons($courseId);
     public function getLessonCount($course);
+
+    public function getModuleByPosition($course);
+
+    public function getLessonsByPosition($course, $moduleId);
 }

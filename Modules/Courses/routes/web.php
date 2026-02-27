@@ -25,4 +25,5 @@ Route::prefix('filemanager')->group(function () {
 
 Route::group(['as' => 'courses.'], function(){
     Route::get('/khoa-hoc', [ClientsCoursesController::class, 'index'])->name('index');
+    Route::get('/khoa-hoc/{slug}', [ClientsCoursesController::class, 'detail'])->name('detail');
 });

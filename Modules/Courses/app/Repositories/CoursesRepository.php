@@ -65,6 +65,10 @@ class CoursesRepository extends BaseRepository implements CoursesRepositoryInter
         return $this->model->limit($limit)->latest()->paginate($limit);
     }
 
+    public function getCourseActive($slug){
+        return $this->model->whereSlug($slug)->first();
+    }
+
     public function deleteCourse($id){
         return $this->model->withoutGlobalScope(ActiveScope::class)->where('id', $id)->delete();
     }

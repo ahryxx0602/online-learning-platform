@@ -17,3 +17,8 @@ function getHour($secs){
     $value = round($secs / 3600, 1);
     return $value . 'h';
 }
+
+function getMinute($secs) {
+    $value = round($secs / 60, 1);
+    return $value . ' phút';
+}

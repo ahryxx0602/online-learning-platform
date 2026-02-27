@@ -18,10 +18,12 @@ interface CoursesRepositoryInterface extends RepositoryInterface
 
     public function getCourses($limit);
     
-    public function getCourse($id);
+    public function getCourse($slug);
 
     public function deleteCourse($limit);
 
     public function updateCourse($id, $data = []);
+
+    public function getCourseActive($slug);
     
 }

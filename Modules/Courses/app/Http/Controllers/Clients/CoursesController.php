@@ -25,5 +25,18 @@ class CoursesController extends Controller
         $pageName = 'Khóa học';
         $courses = $this->coursesRepository->getCourses(config('paginate.limit'));
         return view('courses::clients.index', compact('pageTitle', 'pageName', 'courses'));
-    }   
+    }
+    
+    public function detail($slug) {
+        $course = $this->coursesRepository->getCourseActive($slug);
+        if(!$course){
+            abort(404);
+        }
+        $index = 0;
+        $pageTitle = $course->name;
+        $pageName = $course->name;
+        return view('courses::clients.detail', compact('pageTitle', 'pageName', 'course', 'index')); 
+
+
+    }
 }
