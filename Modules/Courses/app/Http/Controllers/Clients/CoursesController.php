@@ -4,19 +4,22 @@ namespace Modules\Courses\app\Http\Controllers\Clients;
 
 use App\Http\Controllers\Controller;
 use Modules\Courses\Repositories\CoursesRepositoryInterface;
+use Modules\Lessons\Repositories\LessonsRepository;
+use Modules\Lessons\Repositories\LessonsRepositoryInterface;
 
 class CoursesController extends Controller
 {
     protected $coursesRepository;
 
-    protected $teachersRepository;
+    protected $lessonsRepository;
 
     public function __construct(
         CoursesRepositoryInterface $coursesRepository,
-
+        LessonsRepositoryInterface $lessonsRepository,
     )
     {
         $this->coursesRepository = $coursesRepository;
+        $this->lessonsRepository = $lessonsRepository;
     }
 
 
@@ -36,7 +39,17 @@ class CoursesController extends Controller
         $pageTitle = $course->name;
         $pageName = $course->name;
         return view('courses::clients.detail', compact('pageTitle', 'pageName', 'course', 'index')); 
+    }
 
-
+    public function getTrialVideo($lesonId = 0){
+        $lesson = $this->lessonsRepository->find($lesonId);
+        if(!$lesonId){
+            return ['success'=> false];
+        }
+        $lesson->load('video');
+        return [
+            'success'=> true, 
+            'data' => $lesson
+        ];
     }
 }
