@@ -30,4 +30,5 @@ Route::group(['as' => 'courses.'], function(){
         Route::get('/trial/{lessonId?}', [ClientsCoursesController::class, 'getTrialVideo'])->name('trial');
     });
     Route::get('/stream/trial/{lessonId}', [ClientsCoursesController::class, 'streamTrialVideo'])->name('stream.trial');
+    Route::get('/stream/lesson/{lessonId}', [ClientsCoursesController::class, 'streamVideo'])->name('stream.lesson');
 });

@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use Modules\Lessons\Http\Controllers\LessonsController;
+use Modules\Lessons\app\Http\Controllers\Clients\LessonsController as ClientsLessonsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -29,3 +30,8 @@ Route::middleware('auth')
         Route::post('/{courseId}/sort', [LessonsController::class, 'handleSort'])->name('handleSort');
         Route::delete('/delete-multiple', [LessonsController::class, 'deleteMultiple'])->name('deleteMultiple');
     });
+
+Route::group(['as' => 'lessons.'], function () {
+    Route::get('bai-hoc/{slug}', [ClientsLessonsController::class, 'detail'])->name('detail');
+});
+

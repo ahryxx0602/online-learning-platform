@@ -101,4 +101,9 @@ class LessonsRepository extends BaseRepository implements LessonsRepositoryInter
     public function getLessonsByPosition($course, $moduleId){
         return $course->lessons()->where('parent_id', $moduleId)->orderBy('position')->get();
     }
+
+    public function findBySlug($slug)
+    {
+        return $this->model->where('slug', $slug)->first();
+    }
 }

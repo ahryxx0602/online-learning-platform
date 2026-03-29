@@ -10,6 +10,8 @@
                             {{"Bài " . ($index++) . ": " . $lesson->name}}
                             @if($lesson->is_trial)
                                 <p class="trial-btn" data-id="{{ $lesson->id }}">Học thử</p>
+                            @else
+                                <a class="trial-btn" href="{{ route('lessons.detail', $lesson->slug) }}">Xem chi tiết</a>
                             @endif
                             <span>{{ getTime($lesson->duration) }}</span>
                         </div>

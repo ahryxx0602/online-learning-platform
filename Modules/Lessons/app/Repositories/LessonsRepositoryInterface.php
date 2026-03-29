@@ -24,4 +24,6 @@ interface LessonsRepositoryInterface extends RepositoryInterface
     public function getModuleByPosition($course);
 
     public function getLessonsByPosition($course, $moduleId);
+
+    public function findBySlug($slug);
 }
