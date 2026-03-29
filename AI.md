@@ -1,0 +1,21 @@
+🤖 Tích hợp AI tạo bài kiểm tra tự động (Auto-Quiz Generator)⚠️ Lưu ý: Đây là tính năng nâng cao (Advanced Feature). Chỉ bắt đầu thực hiện sau khi các module cốt lõi (Quản lý khóa học, Học thử, Thanh toán VNPAY) đã hoàn thiện và test thành công.1. Giới thiệuModule này hoạt động như một trợ lý ảo cho giảng viên. Thay vì phải đọc lại tài liệu và tự nghĩ câu hỏi, giảng viên chỉ cần click một nút. Hệ thống sẽ đọc file tài liệu bài giảng, gửi cho AI (OpenAI GPT-4o-mini) và trả về một bộ câu hỏi trắc nghiệm hoàn chỉnh lưu trực tiếp vào Database.2. Luồng hoạt động (Workflow)Trigger: Giảng viên truy cập giao diện quản lý bài giảng (Lesson), chọn một tài liệu đã upload (PDF/TXT) và nhấn nút Generate Quiz by AI.Text Extraction: Laravel Backend sử dụng thư viện để trích xuất chữ (text) từ file tài liệu.API Request: Backend gói đoạn text trích xuất được cùng với một System Prompt (yêu cầu định dạng JSON) và gọi sang OpenAI API.AI Processing: AI đọc hiểu tài liệu và sinh ra bộ 5-10 câu hỏi trắc nghiệm.Validation & Store: Backend nhận chuỗi JSON từ AI, validate các trường (question, options, correct_answer), sau đó insert vào table quizzes và quiz_questions.Review: Bài test được lưu ở trạng thái Nháp (Draft). Giảng viên vào review, chỉnh sửa nếu cần và đổi trạng thái sang Xuất bản (Published).3. Cấu trúc DatabaseYêu cầu 2 bảng mới để lưu trữ dữ liệu AI sinh ra:Table: quizzesFieldTypeNoteidintPrimary Keylesson_idintForeign Key (Bài giảng)titlevarchar(255)Ví dụ: "Bài kiểm tra (AI Generated)"prompt_tokensintLưu số lượng token API đã dùng để thống kê chi phístatustinyint0: Nháp (Cần review), 1: Đã duyệtTable: quiz_questionsFieldTypeNoteidintPrimary Keyquiz_idintForeign Keyquestion_texttextNội dung câu hỏioption_avarchar(255)Đáp án Aoption_bvarchar(255)Đáp án Boption_cvarchar(255)Đáp án Coption_dvarchar(255)Đáp án Dcorrect_answerchar(1)Lưu 'A', 'B', 'C', hoặc 'D'explanationtextAI giải thích tại sao chọn đáp án này4. Công nghệ & Thư viện (Packages) cần thiếtKhi bắt đầu code phần này, bạn chạy các lệnh sau để cài thư viện:Shell# 1. Thư viện gọi API OpenAI chính thức cho PHP
+composer require openai-php/client
+
+# 2. Thư viện đọc file PDF lấy Text của Spatie
+composer require spatie/pdf-to-text
+(Lưu ý: Thư viện spatie/pdf-to-text yêu cầu server cài đặt sẵn công cụ pdftotext của poppler-utils).5. System Prompt (Trái tim của tính năng)Để đảm bảo AI không bị "ảo giác" và luôn trả về cấu trúc JSON chuẩn xác để Backend Laravel có thể dùng json_decode(), hãy sử dụng mẫu prompt sau khi gọi API:PHP$systemPrompt = '
+Bạn là một chuyên gia giáo dục. Nhiệm vụ của bạn là đọc đoạn tài liệu được cung cấp và tạo ra 5 câu hỏi trắc nghiệm khách quan.
+BẮT BUỘC trả về dữ liệu dưới định dạng JSON (array of objects) với cấu trúc chính xác như sau, không kèm theo bất kỳ văn bản nào khác ngoài JSON:
+[
+  {
+    "question_text": "Nội dung câu hỏi?",
+    "option_a": "Lựa chọn A",
+    "option_b": "Lựa chọn B",
+    "option_c": "Lựa chọn C",
+    "option_d": "Lựa chọn D",
+    "correct_answer": "A", 
+    "explanation": "Giải thích ngắn gọn tại sao A đúng."
+  }
+]
+';
+6. Checklist công việc (To-do List)[ ] Tạo Migration và Model cho quizzes và quiz_questions.[ ] Cài đặt các package bắt buộc.[ ] Đăng ký tài khoản OpenAI platform, lấy OPENAI_API_KEY thêm vào file .env.[ ] Viết AiQuizService.php để đóng gói logic: Đọc PDF -> Cấu hình Prompt -> Gọi API -> Trả về mảng PHP.[ ] Xây dựng Controller: Nhận request từ nút bấm của giảng viên, gọi Service, và thực hiện vòng lặp foreach để insert dữ liệu vào database.[ ] Tạo View (Blade) cho Giảng viên: Hiển thị danh sách câu hỏi AI vừa tạo để họ edit text, chọn lại đáp án đúng nếu AI làm sai, và bấm "Lưu xuất bản".7. Xử lý rủi ro (Quality Assurance)Giới hạn Text: Một file PDF dài 100 trang sẽ làm quá tải API và tốn nhiều tiền. Hãy cắt (chunk) lấy khoảng 2000 - 3000 từ (words) quan trọng nhất của file để gửi đi.Bắt lỗi API: Bọc API request trong khối try...catch. Nếu OpenAI bị timeout hoặc hết tiền trong tài khoản, cần return back()->with('error', 'Hệ thống AI đang bận, vui lòng thử lại sau.').Bạn có muốn mình viết trước mã nguồn PHP cốt lõi của class AiQuizService (phần tương tác trực tiếp với OpenAI API) để bạn cất vào một góc, sau này lôi ra dùng cho lẹ không?

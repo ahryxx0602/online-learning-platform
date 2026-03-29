@@ -28,5 +28,6 @@ Route::group(['as' => 'courses.'], function(){
     Route::get('/khoa-hoc/{slug}', [ClientsCoursesController::class, 'detail'])->name('detail');
     Route::prefix('data')->name('data.')->group(function() {
         Route::get('/trial/{lessonId?}', [ClientsCoursesController::class, 'getTrialVideo'])->name('trial');
-    }); 
+    });
+    Route::get('/stream/trial/{lessonId}', [ClientsCoursesController::class, 'streamTrialVideo'])->name('stream.trial');
 });

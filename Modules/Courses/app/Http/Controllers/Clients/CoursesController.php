@@ -3,8 +3,9 @@
 namespace Modules\Courses\app\Http\Controllers\Clients;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Modules\Courses\Repositories\CoursesRepositoryInterface;
-use Modules\Lessons\Repositories\LessonsRepository;
 use Modules\Lessons\Repositories\LessonsRepositoryInterface;
 
 class CoursesController extends Controller
@@ -48,8 +49,68 @@ class CoursesController extends Controller
         }
         $lesson->load('video');
         return [
-            'success'=> true, 
+            'success'=> true,
             'data' => $lesson
         ];
+    }
+
+    public function streamTrialVideo(Request $request, $lessonId)
+    {
+        $lesson = $this->lessonsRepository->find($lessonId);
+        if (!$lesson || !$lesson->is_trial) {
+            abort(403);
+        }
+
+        $lesson->load('video');
+        if (!$lesson->video) {
+            abort(404);
+        }
+
+        // Lấy path thực từ URL (vd: /storage/videos/abc.mp4 -> videos/abc.mp4)
+        $relativePath = ltrim(parse_url($lesson->video->url, PHP_URL_PATH), '/');
+        $relativePath = preg_replace('#^storage/#', '', $relativePath);
+
+        if (!Storage::disk('public')->exists($relativePath)) {
+            abort(404);
+        }
+
+        $fullPath = Storage::disk('public')->path($relativePath);
+        $fileSize = filesize($fullPath);
+        $mimeType = mime_content_type($fullPath) ?: 'video/mp4';
+
+        $start = 0;
+        $end   = $fileSize - 1;
+        $statusCode = 200;
+        $headers = [
+            'Content-Type'   => $mimeType,
+            'Accept-Ranges'  => 'bytes',
+            'Content-Length' => $fileSize,
+        ];
+
+        // Xử lý Range request để tua video hoạt động
+        if ($request->hasHeader('Range')) {
+            preg_match('/bytes=(\d+)-(\d*)/', $request->header('Range'), $matches);
+            $start = (int) $matches[1];
+            $end   = isset($matches[2]) && $matches[2] !== '' ? (int) $matches[2] : $fileSize - 1;
+
+            $headers['Content-Range']  = "bytes {$start}-{$end}/{$fileSize}";
+            $headers['Content-Length'] = $end - $start + 1;
+            $statusCode = 206;
+        }
+
+        $chunkSize = 1024 * 1024; // 1MB per chunk
+        $stream = fopen($fullPath, 'rb');
+        fseek($stream, $start);
+
+        return response()->stream(function () use ($stream, $start, $end, $chunkSize) {
+            $remaining = $end - $start + 1;
+            while (!feof($stream) && $remaining > 0) {
+                $read = min($chunkSize, $remaining);
+                echo fread($stream, $read);
+                $remaining -= $read;
+                flush();
+            }
+            fclose($stream);
+        }, $statusCode, $headers);
     }
 }
